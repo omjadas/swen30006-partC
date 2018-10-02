@@ -12,6 +12,7 @@ public class MyAIController extends CarController{
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
+		//try
 		
 	}
 
