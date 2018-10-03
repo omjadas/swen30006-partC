@@ -1,0 +1,135 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch)",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-GdxBuild<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.badlogic.gdx.utils.GdxBuild",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-PluginManager<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.config.plugins.util.PluginManager",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ProcessIdPatternConverter<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.pattern.ProcessIdPatternConverter",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-CustomLoggerGenerator<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.tools.CustomLoggerGenerator",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ExtendedLoggerGenerator<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.tools.ExtendedLoggerGenerator",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-Generate$CustomLogger<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.tools.Generate$CustomLogger",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-Generate$ExtendedLogger<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.apache.logging.log4j.core.tools.Generate$ExtendedLogger",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-XPMFile<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.lwjgl.util.XPMFile",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-CacheLineSize<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "org.lwjgl.util.mapped.CacheLineSize",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DesktopLauncher<Part C>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "swen30006.driving.desktop.DesktopLauncher",
+            "args": "",
+            "projectName": "Part C"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Attach)",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": "<debug port of remote debuggee>"
+        }
+    ]
+}
