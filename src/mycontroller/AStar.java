@@ -21,9 +21,9 @@ public class AStar {
 	
 	
 	private static final float COST_LAVA = 100.0f;
-	private static final float COST_HEALTH = 0.5f;
+	private static final float COST_HEALTH = 0.1f;
 	private static final float COST_MUD = Float.MAX_VALUE;
-	private static final float COST_GRASS = 999.9f;
+	private static final float COST_GRASS = 0.5f;
 	
 			
 	
@@ -38,22 +38,30 @@ public class AStar {
         gScore.put(from, 0.0f);
         fScore = new HashMap<>();
         fScore.put(from, util.getDistanceManh(from, to));
+        updateMap(map);
         
         
         tentative_gScore = (float) 0.0;
         Coordinate currentPosition;
         
+        unexploredNodes.add(from);
         while(unexploredNodes.size()>0) {
-        	currentPosition = getMoveMinFScore();
-
+        	
+        	currentPosition = getMinFScore();
         	if (currentPosition.equals(to)) {
+//        		System.out.println(reconstructPath(currentPosition));
                 return reconstructPath(currentPosition);
             }
         	
         	unexploredNodes.remove(currentPosition);
         	exploredNodes.add(currentPosition);
         	
-        	for (Coordinate neighbour : util.getAllNeighbours(currentPosition)) {
+//        	System.out.println(fScore);
+        	
+        	for (Entry<Coordinate, String> entry : util.getAllNeighbours(map,currentPosition).entrySet()) {
+        		
+        		Coordinate neighbour = entry.getKey();
+        		
                 if (exploredNodes.contains(neighbour)) {
                     continue;	// Ignore the neighbor which is already evaluated.
                 }
@@ -72,13 +80,13 @@ public class AStar {
 	         	// This path is the best until now. Record it!
 	             cameFrom.put(neighbour, currentPosition);
 	             gScore.put(neighbour, tentative_gScore); 
-	             fScore.put(neighbour, gScore.get(neighbour) + getCost(neighbour)*util.getDistanceManh(neighbour, to));
+	             fScore.put(neighbour, gScore.get(neighbour)*0 + util.getDistanceManh(neighbour, to)); //getCost(neighbour)*
         	}
         }
         return null;
 	}
 	
-	private static Coordinate getMoveMinFScore() {
+	private static Coordinate getMinFScore() {
 		//
 		
 		Entry<Coordinate, Float> minValue = null;
@@ -87,7 +95,7 @@ public class AStar {
 		    	minValue = entry;
 		    }
 		}
-		
+
 		return minValue.getKey();
 	}
 
@@ -112,6 +120,10 @@ public class AStar {
 		}else {
 			return COST_HEALTH;
 		}		
+	}
+	
+	private static void updateMap(HashMap<Coordinate, MapTile> map) {
+		AStar.map = map;
 	}
 	
 	

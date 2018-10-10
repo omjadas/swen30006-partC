@@ -5,11 +5,12 @@ import java.util.HashMap;
 
 import tiles.MapTile;
 import tiles.TrapTile;
+import tiles.MapTile.Type;
 import utilities.Coordinate;
 
 public class util {
 	
-	private static HashMap<Coordinate, MapTile> map;
+//	private static HashMap<Coordinate, MapTile> map;
 	
 	protected static float getDistanceEucl(Coordinate from, Coordinate to) {
 		return (float) Math.pow(Math.abs(Math.pow(from.x - to.x, 2)) + Math.pow(from.y - to.y, 2), 0.5);		
@@ -22,14 +23,17 @@ public class util {
 	public static String getTrapType (HashMap<Coordinate, MapTile> map, Coordinate coordinate) {
 		MapTile mapTile = map.get(coordinate);
 		if (mapTile != null) {
-            TrapTile trapTile = (TrapTile) mapTile;
-
-            return trapTile.getTrap();
-        }
-        return null;
+			if (!mapTile.isType(Type.TRAP)) {
+				return mapTile.getType().toString();
+	        }else {
+	        	TrapTile trapTile = (TrapTile) mapTile;
+	        	return trapTile.getTrap();
+	        }
+		}
+		return null;
 	}
 	
-	public static ArrayList<Coordinate> getAllNeighbours(Coordinate position){
+	public static HashMap<Coordinate, String> getAllNeighbours(HashMap<Coordinate, MapTile> map, Coordinate position){
 		final Coordinate[] allNeighbours = {
 				new Coordinate(position.x+1,position.y),
 				new Coordinate(position.x,position.y+1),
@@ -37,23 +41,12 @@ public class util {
 				new Coordinate(position.x,position.y-1)
 		};
 		
-		final ArrayList<Coordinate> validNeighbours = new ArrayList<>();
+		final HashMap<Coordinate, String> validNeighbours = new HashMap<Coordinate, String>();
 		
 		for (Coordinate neighbour: allNeighbours) {
 			String neighbourType = getTrapType(map,neighbour);
-			if (map.containsKey(neighbour) && neighbourType != "Wall") {
-				validNeighbours.add(neighbour);
-			}
-			
-			return validNeighbours;
+			validNeighbours.put(neighbour,neighbourType);
 		}
-		
-		
-		return null;
-		
-		
+		return validNeighbours;
 	}
-	
-	
-
 }
