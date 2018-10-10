@@ -15,11 +15,6 @@ import world.Car;
 public class MyAIController extends CarController{
 	
 	HashMap<Coordinate, MapTile> map = super.getMap();
-	HashMap<Coordinate, MapTile> healthsLocation = new HashMap<Coordinate, MapTile>();
-	HashMap<Coordinate, MapTile> lavaLocation = new HashMap<Coordinate, MapTile>();
-	HashMap<Coordinate, Integer> keysLocation = new HashMap<Coordinate,Integer>();
-	HashMap<Coordinate, MapTile> grassLocation = new HashMap<Coordinate, MapTile>();
-	HashMap<Coordinate, MapTile> mudLocation = new HashMap<Coordinate, MapTile>();
 	
 	private CarController pathing;
 	private CarController exploring;
