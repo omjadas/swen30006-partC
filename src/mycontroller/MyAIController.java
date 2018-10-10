@@ -27,7 +27,6 @@ public class MyAIController extends CarController{
 
 	public MyAIController(Car car) {
 		super(car);
-		
 		this.pathing = new AStarController(car);
 		this.exploring = new FollowWallController(car);
 	}
@@ -37,9 +36,8 @@ public class MyAIController extends CarController{
 		pathing.update();
 		// TODO Auto-generated method stub
 		HashMap<Coordinate, MapTile> currentView = getView();
-//		System.out.println(grassLocation);
+		// System.out.println(grassLocation);
         updateWorldMap(currentView);
-		
 	}
 	
 	private void updateWorldMap(HashMap<Coordinate, MapTile> view) {

@@ -16,8 +16,6 @@ public class AStarController extends CarController {
 	private Coordinate currentPosition;
 	private Coordinate destination ;
 	private Coordinate nextPosition;
-	
-	
 	public AStarController(Car car) {
 		super(car);
 	}
@@ -25,14 +23,9 @@ public class AStarController extends CarController {
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
 	@Override
-	public void update() {
-		
-		
+	public void update() {		
 		currentPosition  = new Coordinate(getPosition());
 		HashMap<Coordinate, MapTile> currentView = getView();
-		for (Coordinate dest: currentView.keySet()) {
-			destination = dest;
-		}
 		destination = new Coordinate(10,2);
 		ArrayList<Coordinate> pathToDest = getPath();
 		nextPosition = pathToDest.get(pathToDest.size()-2);
@@ -40,7 +33,7 @@ public class AStarController extends CarController {
 		System.out.println(nextPosition);
 		System.out.println(pathToDest);
 		go(Direction.EAST,Direction.EAST);
-//		move(currentPosition,nextPosition);
+		//move(currentPosition,nextPosition);
 	}
 
 	private void move(Coordinate current, Coordinate next) {
