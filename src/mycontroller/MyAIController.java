@@ -15,6 +15,7 @@ import world.Car;
 public class MyAIController extends CarController{
 	
 	HashMap<Coordinate, MapTile> map = super.getMap();
+	ArrayList<Coordinate> keys = new ArrayList<Coordinate>();
 	
 	private CarController pathing;
 	private CarController exploring;
@@ -43,22 +44,22 @@ public class MyAIController extends CarController{
 			if (mapTile.isType(Type.TRAP)) {
 				map.put(coor, mapTile);
 				if (util.getTrapType(map,coor)=="health") {
-					healthsLocation.put(coor,mapTile);
+					map.put(coor,mapTile);
 				}
 				
 				if (util.getTrapType(map,coor)=="grass") {
-					grassLocation.put(coor,mapTile);
+					map.put(coor,mapTile);
 				}
 				
 				if (util.getTrapType(map,coor)=="mud") {
-					mudLocation.put(coor,mapTile);
+					map.put(coor,mapTile);
 				}
 				
 				if (util.getTrapType(map,coor)=="lava") {
-					lavaLocation.put(coor,mapTile);
+					map.put(coor,mapTile);
 					int key = ((LavaTrap) mapTile).getKey();
 					if (key>0) {
-						keysLocation.put(coor, key);
+						keys.add(coor);
 					}
 				}
 			}

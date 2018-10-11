@@ -41,12 +41,12 @@ public class util {
 				new Coordinate(position.x,position.y-1)
 		};
 		
-		final HashMap<Coordinate, String> validNeighbours = new HashMap<Coordinate, String>();
+		final HashMap<Coordinate, String> myNeighbours = new HashMap<Coordinate, String>();
 		
 		for (Coordinate neighbour: allNeighbours) {
 			String neighbourType = getTrapType(map,neighbour);
-			validNeighbours.put(neighbour,neighbourType);
+			myNeighbours.put(neighbour,neighbourType);
 		}
-		return validNeighbours;
+		return myNeighbours;
 	}
 }
