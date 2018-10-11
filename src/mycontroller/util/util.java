@@ -7,6 +7,7 @@ import tiles.MapTile;
 import tiles.TrapTile;
 import tiles.MapTile.Type;
 import utilities.Coordinate;
+import world.WorldSpatial.Direction;
 
 public class util {
 	
@@ -34,12 +35,11 @@ public class util {
 	}
 	
 	public static HashMap<Coordinate, String> getAllNeighbours(HashMap<Coordinate, MapTile> map, Coordinate position){
-		final Coordinate[] allNeighbours = {
-				new Coordinate(position.x+1,position.y),
-				new Coordinate(position.x,position.y+1),
-				new Coordinate(position.x-1,position.y),
-				new Coordinate(position.x,position.y-1)
-		};
+		final ArrayList<Coordinate> allNeighbours = new ArrayList<Coordinate>();
+		allNeighbours.add(getNeighbourCoordinate(position,Direction.EAST));
+		allNeighbours.add(getNeighbourCoordinate(position,Direction.SOUTH));
+		allNeighbours.add(getNeighbourCoordinate(position,Direction.WEST));
+		allNeighbours.add(getNeighbourCoordinate(position,Direction.NORTH));
 		
 		final HashMap<Coordinate, String> myNeighbours = new HashMap<Coordinate, String>();
 		
@@ -48,5 +48,27 @@ public class util {
 			myNeighbours.put(neighbour,neighbourType);
 		}
 		return myNeighbours;
+	}
+	
+	public static Coordinate getNeighbourCoordinate(Coordinate from, Direction direction) {
+//		System.out.println("in "+from+direction);
+		Coordinate to = null;
+		switch(direction){
+		case EAST:
+			to = new Coordinate(from.x+1,from.y);
+			break;
+		case NORTH:
+			to = new Coordinate(from.x,from.y+1);
+			break;
+		case SOUTH:
+			to = new Coordinate(from.x,from.y-1);
+			break;
+		case WEST:
+			to = new Coordinate(from.x-1,from.y);
+			break;
+		}
+//		System.out.println("out "+to);
+		// TODO Auto-generated method stub
+		return to;
 	}
 }

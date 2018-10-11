@@ -8,16 +8,29 @@ import java.util.Map.Entry;
 import mycontroller.util.util;
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial;
+import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 
-	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
-            Coordinate from, Coordinate to) {
+	public static List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
+            Coordinate from) {
 		
-//		ArrayList<Boolean> areRoads = checkRoads(currentView, Coordinate currentPosition)
+		ArrayList<Direction> directions = new ArrayList<Direction>();
+		directions.add(Direction.EAST);
+		directions.add(Direction.SOUTH);
+		directions.add(Direction.WEST);
+		directions.add(Direction.NORTH);
+		
+		ArrayList<Coordinate> paths = checkRoads(map, from);
+//		System.out.println(areRoads);
+		
+
+		System.out.println(paths); 
+		// random choose one path and return
 		
 		// TODO Auto-generated method stub
-		return null;
+		return paths;
 	}
 
 	@Override
@@ -26,17 +39,15 @@ public class ExploreStrategy implements Pathable{
 		return null;
 	}
 	
-	public ArrayList<Boolean> checkRoads(HashMap<Coordinate, MapTile> currentView, Coordinate currentPosition){
+	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
 		// Check tiles if they are safe to move to
-		HashMap<Coordinate, String> neighbours = util.getAllNeighbours(currentView, currentPosition);
-		ArrayList<Boolean> areRoads = new ArrayList<Boolean>();
+		HashMap<Coordinate, String> neighbours = util.getAllNeighbours(map, currentPosition);
+//		System.out.println(neighbours);
+		ArrayList<Coordinate> areRoads = new ArrayList<Coordinate>();
 		
 		for (Entry<Coordinate, String> entry : neighbours.entrySet()) {
 			if (entry.getValue().equals("ROAD")) {
-				areRoads.add(true);
-			}
-			else {
-				areRoads.add(false);
+				areRoads.add(entry.getKey());
 			}
 		}
 		return areRoads;

@@ -26,14 +26,14 @@ public class AStarController extends CarController {
 	public void update() {		
 		currentPosition  = new Coordinate(getPosition());
 		HashMap<Coordinate, MapTile> currentView = getView();
-		destination = new Coordinate(10,2);
+		destination = new Coordinate(3,15);
 		ArrayList<Coordinate> pathToDest = getPath();
 		nextPosition = pathToDest.get(pathToDest.size()-2);
-		System.out.print(currentPosition);
-		System.out.println(nextPosition);
-		System.out.println(pathToDest);
-		go(Direction.EAST,Direction.EAST);
-		//move(currentPosition,nextPosition);
+//		System.out.print(currentPosition);
+//		System.out.println(nextPosition);
+//		System.out.println(pathToDest);
+//		go(Direction.EAST,Direction.EAST);
+		move(currentPosition,nextPosition);
 	}
 
 	private void move(Coordinate current, Coordinate next) {
@@ -41,7 +41,7 @@ public class AStarController extends CarController {
 		Direction nextMovement = getMoveAction(current,next);
 		
 //		System.out.println(getOrientation());
-		go(Direction.EAST,Direction.EAST);
+		go(nextMovement,getOrientation());
 	}
 
 	private Direction getMoveAction(Coordinate current, Coordinate next) {
@@ -78,48 +78,61 @@ public class AStarController extends CarController {
 			switch(orientation){
 			case EAST:
 				turnLeft();
+				break;
 			case NORTH:
-				
+				break;
 			case SOUTH:
 				turnLeft();
 				turnLeft();
+				break;
 			case WEST:
 				turnRight();
+				break;
 			}
 		}else if (input.equals(WorldSpatial.Direction.EAST)) {
 			switch(orientation){
 			case EAST:
-				
+				break;
 			case NORTH:
 				turnRight();
+				break;
 			case SOUTH:
 				turnLeft();
+				break;
 			case WEST:
 				turnLeft();
 				turnLeft();
+				break;
 			}
 		}else if (input.equals(WorldSpatial.Direction.SOUTH)) {
 			switch(orientation){
 			case EAST:
 				turnRight();
+				break;
 			case NORTH:
 				turnRight();
 				turnRight();
+				break;
 			case SOUTH:
-				
+				break;
 			case WEST:
 				turnLeft();
+				break;
 			}
 		}else {
 			switch(orientation){
 			case EAST:
 				turnRight();
 				turnRight();
+				break;
 			case NORTH:
 				turnLeft();
+				break;
 			case SOUTH:
 				turnRight();
+				break;
 			case WEST:
+				break;
 			}
 		}
 	}
