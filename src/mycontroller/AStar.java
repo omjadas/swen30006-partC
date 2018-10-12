@@ -6,100 +6,109 @@ import java.util.Map.Entry;
 
 import mycontroller.util.util;
 import tiles.MapTile;
+import tiles.MapTile.Type;
+import tiles.TrapTile;
 import utilities.Coordinate;
 
 public class AStar {
 	
-	private static ArrayList<Coordinate> exploredNodes;
-	private static ArrayList<Coordinate> unexploredNodes;
-	private static float tentative_gScore;
-	private static HashMap<Coordinate, MapTile> map;
-	private static HashMap<Coordinate, Coordinate> cameFrom;
-	private static HashMap<Coordinate, Float> gScore;
-	private static HashMap<Coordinate, Float> fScore;
-	
-	
-	
-	private static final float COST_LAVA = 100.0f;
-	private static final float COST_HEALTH = 0.1f;
-	private static final float COST_MUD = Float.MAX_VALUE;
-	private static final float COST_GRASS = 0.5f;
+	private static float COST_LAVA = 100.0f;
+	private static float COST_HEALTH = 1f;
+	private static float COST_MUD = Float.MAX_VALUE;
+	private static float COST_GRASS = 10f;
 	
 			
 	
-	protected static ArrayList<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
+	public static ArrayList<Coordinate> getPath(HashMap<Coordinate, MapTile> view, 
             Coordinate from, Coordinate to){
+		
+		ArrayList<Coordinate> exploredNodes;
+		ArrayList<Coordinate> unexploredNodes;
+		float tentative_gScore;
+//		private static HashMap<Coordinate, MapTile> map;
+		HashMap<Coordinate, Coordinate> cameFrom;
 		// initial data
         exploredNodes = new ArrayList<>();
         unexploredNodes = new ArrayList<>();
         exploredNodes.add(from);
         cameFrom = new HashMap<>();
-        gScore = new HashMap<>();
-        gScore.put(from, 0.0f);
-        fScore = new HashMap<>();
-        fScore.put(from, util.getDistanceManh(from, to));
-        updateMap(map);
-        
-        
+        HashMap<Coordinate, Float> gScore = new HashMap<>();
+		gScore.put(from, 0.0f);
+		HashMap<Coordinate, Float> fScore = new HashMap<>();
+		fScore.put(from, getCost(view, from) * util.getDistanceManh(from, to));
+
         tentative_gScore = (float) 0.0;
-        Coordinate currentPosition;
         
+//      updateMap(map);
         unexploredNodes.add(from);
-        while(unexploredNodes.size()>0) {
-        	
-        	currentPosition = getMinFScore();
+		while (unexploredNodes.size() > 0) {
+			Coordinate currentPosition = getMinFScore(fScore,unexploredNodes);
+			
+			if (currentPosition == null) {
+				return null;
+			}
+			
         	if (currentPosition.equals(to)) {
 //        		System.out.println(reconstructPath(currentPosition));
-                return reconstructPath(currentPosition);
+                return reconstructPath(currentPosition, cameFrom);
             }
         	
         	unexploredNodes.remove(currentPosition);
         	exploredNodes.add(currentPosition);
-        	
-//        	System.out.println(fScore);
-        	
-        	for (Entry<Coordinate, String> entry : util.getAllNeighbours(map,currentPosition).entrySet()) {
+        	       	
+        	for (Entry<Coordinate, String> entry : util.getAllNeighbours(view,currentPosition).entrySet()) {
         		
         		Coordinate neighbour = entry.getKey();
+        		String tileTypeString = entry.getValue();
         		
                 if (exploredNodes.contains(neighbour)) {
                     continue;	// Ignore the neighbor which is already evaluated.
                 }
+                            
                 
 	             // The distance from start to a neighbor
 	             tentative_gScore = gScore.get(currentPosition) + util.getDistanceManh(currentPosition, neighbour);
 	
 	             if (!unexploredNodes.contains(neighbour)) {
 	            	 unexploredNodes.add(neighbour);
+//	            	 System.out.println(exploredNodes);
 	             }	// Discover a new node
 		         else if (tentative_gScore >= gScore.get(neighbour)) {
 		        	 continue;		// This is not a better path.
 		         }
 
 	         	
-	         	// This path is the best until now. Record it!
-	             cameFrom.put(neighbour, currentPosition);
-	             gScore.put(neighbour, tentative_gScore); 
-	             fScore.put(neighbour, gScore.get(neighbour)*0 + util.getDistanceManh(neighbour, to)); //getCost(neighbour)*
+				// This path is the best until now. Record it!
+				cameFrom.put(neighbour, currentPosition);
+				if (tileTypeString.equals("MUD") || tileTypeString.equals("WALL")) {
+					gScore.put(neighbour, COST_MUD);
+					// Ignore the neighbor which is mud or wall.
+				} else {
+					gScore.put(neighbour, tentative_gScore);
+				}
+
+	            fScore.put(neighbour, gScore.get(neighbour) + getCost(view,neighbour)*util.getDistanceManh(neighbour, to)); // getCost(view,neighbour)+
         	}
         }
-        return null;
+        return new ArrayList<>();
 	}
 	
-	private static Coordinate getMinFScore() {
+	private static Coordinate getMinFScore(HashMap<Coordinate, Float> fScore, ArrayList<Coordinate> unexploredNodes) {
 		//
-		
-		Entry<Coordinate, Float> minValue = null;
-		for (Entry<Coordinate, Float> entry : fScore.entrySet()) {
-		    if (minValue == null || minValue.getValue() > entry.getValue()) {
-		    	minValue = entry;
+//		System.out.println(fScore);
+		float minValue = Float.MAX_VALUE;
+		Coordinate minKey = null;
+		for (Coordinate unexploredNode : unexploredNodes) {
+			Float value = fScore.get(unexploredNode);
+		    if (minValue > value) {
+		    	minValue = value;
+		    	minKey = unexploredNode;
 		    }
 		}
-
-		return minValue.getKey();
+		return minKey;
 	}
 
-	private static ArrayList<Coordinate> reconstructPath(Coordinate current) {
+	private static ArrayList<Coordinate> reconstructPath(Coordinate current, HashMap<Coordinate, Coordinate> cameFrom) {
         ArrayList<Coordinate> total_path = new ArrayList<>();
         total_path.add(current);
         while (cameFrom.containsKey(current)) {
@@ -110,23 +119,39 @@ public class AStar {
     }
 	
 	
-	private static float getCost(Coordinate position) {
-		if (util.getTrapType(map,position) == "lava") {
-			return COST_LAVA;
-		}else if (util.getTrapType(map,position) == "mud") {
+	private static float getCost(HashMap<Coordinate, MapTile> view, Coordinate position) {
+		MapTile mapTile = view.get(position);
+		if (mapTile == null) {
 			return COST_MUD;
-		}else if (util.getTrapType(map,position) == "grass") {
-			return COST_GRASS;
+		}
+		if (view.get(position).isType(Type.TRAP)) {
+			TrapTile trap = (TrapTile) view.get(position);
+			if (trap.getTrap() == "lava") {
+				return COST_LAVA;
+			}else if (trap.getTrap() == "mud") {
+				return COST_MUD;
+			}else if (trap.getTrap() == "grass") {
+				return COST_GRASS;
+			}else if (trap.getTrap() == "health"){
+				return COST_HEALTH;
+			}else {
+				return 2f; 
+			}	
 		}else {
-			return COST_HEALTH;
-		}		
+			return 2f;
+		}
+			
 	}
 	
-	private static void updateMap(HashMap<Coordinate, MapTile> map) {
-		AStar.map = map;
+//	private static void updateMap(HashMap<Coordinate, MapTile> map) {
+//		AStar.map = map;
+//	}
+	
+	public void update(float lava, float health, float grass) {
+		COST_LAVA = lava;
+		COST_HEALTH = health;
+		COST_GRASS = grass;
 	}
-	
-	
 	
 
 

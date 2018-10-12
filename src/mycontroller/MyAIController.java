@@ -19,10 +19,7 @@ public class MyAIController extends CarController{
 	
 	HashMap<Coordinate, MapTile> map = super.getMap();
 	ArrayList<Coordinate> keys = new ArrayList<Coordinate>();
-	
-	private CarController pathing;
-	private CarController exploring;
-	private Coordinate currentPosition  = new Coordinate(getPosition());
+	private Coordinate currentPosition;
 	
 
 	public MyAIController(Car car) {
@@ -32,62 +29,85 @@ public class MyAIController extends CarController{
 
 	@Override
 	public void update() {
-//		ArrayList<Coordinate> path = AStar.getPath(this.map, getPosition(), destination);
-		
-		
-		ArrayList<Coordinate> path = (ArrayList<Coordinate>) ExploreStrategy.getPath(map,new Coordinate(getPosition()));
-		
-		if (path == null) {
-            throw new IllegalArgumentException("No path to the given destination.");
-        }
-		move(currentPosition,path.get(path.size()-1));
-		// TODO Auto-generated method stub
+			
 		HashMap<Coordinate, MapTile> currentView = getView();
-		// System.out.println(grassLocation);
+		if (getSpeed()<1) {
+			applyForwardAcceleration();
+		}
+		currentPosition  = new Coordinate(getPosition());
+		ArrayList<Coordinate> path = (ArrayList<Coordinate>) ExploreStrategy.getPath(map, currentPosition);
+		
+		if (path.size()>1) {
+			Coordinate nextStep = path.get(path.size()-2);
+			move(currentPosition,nextStep);
+			
+		}
+		
+		// if need health...
+		ArrayList<Coordinate> healthLocations = util.getHealthLocations(map);
+		if (getHealth()<100) {
+
+		}
+
+		ArrayList<Coordinate> keyLocations = util.getKeyLocations(map);
+		if (keyLocations.size()>0) {
+//			System.out.println("Found a key!");
+		}
+		
+		// if explore to the destination, the car is still missing keys
+		// need second exploring method to randomly walk the maze and try to find the key
+		if (currentPosition.equals(util.getFinal(map))) {
+			
+		}
+
         updateWorldMap(currentView);
 	}
 	
+	
 	private void updateWorldMap(HashMap<Coordinate, MapTile> view) {
-		MapTile mapTile;
-		for (Coordinate coor: view.keySet()) {
-			mapTile = view.get(coor);
-			
-			if (mapTile.isType(Type.TRAP)) {
-				map.put(coor, mapTile);
-				if (util.getTrapType(map,coor)=="health") {
-					map.put(coor,mapTile);
-				}
-				
-				if (util.getTrapType(map,coor)=="grass") {
-					System.out.println(coor);
-					map.put(coor,mapTile);
-				}
-				
-				if (util.getTrapType(map,coor)=="mud") {
-					map.put(coor,mapTile);
-				}
-				
-				if (util.getTrapType(map,coor)=="lava") {
-					map.put(coor,mapTile);
-					int key = ((LavaTrap) mapTile).getKey();
-					if (key>0) {
-						keys.add(coor);
-					}
-				}
-			}
-		}
+//		System.out.println("updating the map");
+		map.putAll(view);
+//		MapTile mapTile;
+//		for (Coordinate coor: view.keySet()) {
+//			mapTile = view.get(coor);
+//			
+//			if (mapTile.isType(Type.TRAP)) {
+//				map.put(coor, mapTile);
+//				if (util.getTrapType(map,coor)=="health") {
+//					map.put(coor,mapTile);
+//				}
+//				
+//				if (util.getTrapType(map,coor)=="grass") {
+//					map.put(coor,mapTile);
+//				}
+//				
+//				if (util.getTrapType(map,coor)=="mud") {
+//					map.put(coor,mapTile);
+//				}
+//				
+//				if (util.getTrapType(map,coor)=="lava") {
+//					map.put(coor,mapTile);
+//					int key = ((LavaTrap) mapTile).getKey();
+//					if (key>0) {
+//						keys.add(coor);
+//					}
+//				}
+//			}
+//		}
 	}
 	
 
 	private void move(Coordinate current, Coordinate next) {
-		// TODO Auto-generated method stub
-		Direction nextMovement = getMoveAction(current,next);
-		
-//		System.out.println(getOrientation());
-		go(nextMovement,getOrientation());
+		if (current.equals(next)) {
+			applyBrake();
+			System.out.println("stopping the car");
+		}else {
+			Direction nextOrientation = getNextOrientation(current,next);
+			go(nextOrientation,getOrientation());
+		}
 	}
 
-	private Direction getMoveAction(Coordinate current, Coordinate next) {
+	private Direction getNextOrientation(Coordinate current, Coordinate next) {
 		// TODO Auto-generated method stub
 		if (current.x - next.x > 0) {
 			return Direction.WEST;
@@ -102,20 +122,18 @@ public class MyAIController extends CarController{
 	
 
 	public void go(Direction input, Direction orientation) {
-//		applyBrake();
+
 		if (input.equals(WorldSpatial.Direction.NORTH)) {
 			switch(orientation){
 			case EAST:
 				turnLeft();
 				break;
 			case NORTH:
-				if(getSpeed() < 1){       // Need speed to turn and progress toward the exit
-					applyForwardAcceleration();   // Tough luck if there's a wall in the way
-				}
+				applyForwardAcceleration();
 				break;
 			case SOUTH:
 				applyReverseAcceleration();
-				applyReverseAcceleration();
+				applyBrake();
 				break;
 			case WEST:
 				turnRight();
@@ -124,9 +142,7 @@ public class MyAIController extends CarController{
 		}else if (input.equals(WorldSpatial.Direction.EAST)) {
 			switch(orientation){
 			case EAST:
-				if(getSpeed() < 1){       // Need speed to turn and progress toward the exit
-					applyForwardAcceleration();   // Tough luck if there's a wall in the way
-				}
+				applyForwardAcceleration(); 
 				break;
 			case NORTH:
 				turnRight();
@@ -136,7 +152,7 @@ public class MyAIController extends CarController{
 				break;
 			case WEST:
 				applyReverseAcceleration();
-				applyReverseAcceleration();
+				applyBrake();
 				break;
 			}
 		}else if (input.equals(WorldSpatial.Direction.SOUTH)) {
@@ -146,12 +162,10 @@ public class MyAIController extends CarController{
 				break;
 			case NORTH:
 				applyReverseAcceleration();
-				applyReverseAcceleration();
+				applyBrake();
 				break;
 			case SOUTH:
-				if(getSpeed() < 1){       // Need speed to turn and progress toward the exit
-					applyForwardAcceleration();   // Tough luck if there's a wall in the way
-				}
+				applyForwardAcceleration();
 				break;
 			case WEST:
 				turnLeft();
@@ -161,7 +175,7 @@ public class MyAIController extends CarController{
 			switch(orientation){
 			case EAST:
 				applyReverseAcceleration();
-				applyReverseAcceleration();
+				applyBrake();
 				break;
 			case NORTH:
 				turnLeft();
@@ -170,11 +184,9 @@ public class MyAIController extends CarController{
 				turnRight();
 				break;
 			case WEST:
-				if(getSpeed() < 1){       // Need speed to turn and progress toward the exit
-					applyForwardAcceleration();   // Tough luck if there's a wall in the way
-				}
+				applyForwardAcceleration();
 				break;
 			}
 		}
-	}
+	} 
 }

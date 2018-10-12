@@ -59,13 +59,11 @@ public class AStarController extends CarController {
 
 	private ArrayList<Coordinate> getPath() {
 		// TODO Auto-generated method stub
-		
 		ArrayList<Coordinate> path = AStar.getPath(this.myMap, currentPosition, destination);
 		if (path == null) {
             throw new IllegalArgumentException("No path to the given destination.");
         }
 		return path;
-		
 	}
 	
 
