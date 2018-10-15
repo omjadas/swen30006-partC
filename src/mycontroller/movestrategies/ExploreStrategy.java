@@ -31,45 +31,46 @@ public class ExploreStrategy implements Pathable{
 		updateMap(view);
 		ArrayList<Coordinate> allValidRoads = getRoadsInView(view, from);
 		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
-		ArrayList<Coordinate> path = null;
+		ArrayList<Coordinate> path = new ArrayList<>();
 		Coordinate nextStep = null;
-		
+		path.add(from);
 		for (Coordinate validRoad: allValidRoads) {
 			System.out.println("loop");
 			if (visits.contains(validRoad)) {
 				continue;
 			}
-			path = AStar.getPath(incompleteMap, from, validRoad);
+//			path = AStar.getPath(incompleteMap, from, validRoad);
+			path.add(validRoad);
 			
-			if (path == null) {
-//				visits.add(validRoad);
-				continue;
-			}
-			validRoads.put(validRoad,path);
+//			if (path == null) {
+////				visits.add(validRoad);
+//				continue;
+//			}
+//			validRoads.put(validRoad,path);
 		}
-		
-		if(validRoads.isEmpty()) {
-			
-			Random randomGenerator = new Random();
-			int randomSelect = randomGenerator.nextInt(visits.size());
-			nextStep = visits.get(randomSelect); 
-			
-			path = AStar.getPath(incompleteMap, from, nextStep);
-			System.out.println("go back to " + nextStep);
-			
-//			ArrayList<Coordinate> neighbours = checkRoads(incompleteMap, from);
-//			System.out.println(neighbours.get(1));
-//			path = AStar.getPath(incompleteMap, from, neighbours.get(1));
-		}else {
-			nextStep = getFurtherest(validRoads.keySet(),from);	
-			path = validRoads.get(nextStep);
-		}
-		
-		for (Coordinate x : path){
-			   if (!visits.contains(x))
-				   visits.add(x);
-			}
-		
+//		
+//		if(validRoads.isEmpty()) {
+//			
+//			Random randomGenerator = new Random();
+//			int randomSelect = randomGenerator.nextInt(visits.size());
+//			nextStep = visits.get(randomSelect); 
+//			
+//			path = AStar.getPath(incompleteMap, from, nextStep);
+//			System.out.println("go back to " + nextStep);
+//			
+////			ArrayList<Coordinate> neighbours = checkRoads(incompleteMap, from);
+////			System.out.println(neighbours.get(1));
+////			path = AStar.getPath(incompleteMap, from, neighbours.get(1));
+//		}else {
+//			nextStep = getFurtherest(validRoads.keySet(),from);	
+//			path = validRoads.get(nextStep);
+//		}
+//		
+//		for (Coordinate x : path){
+//			   if (!visits.contains(x))
+//				   visits.add(x);
+//			}
+//		
 		return path;
 	}
 	
