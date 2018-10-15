@@ -50,14 +50,15 @@ public class MyAIController extends CarController{
 			path = (ArrayList<Coordinate>) new NormalStrategy().getPath(map, currentPosition);
 		}
 		
-		if (getSpeed()<1) {
-			applyForwardAcceleration();
-		}
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());
 			Coordinate nextStep = path.get(1);
 			move(currentPosition, nextStep);
 			updateWorldMap(getView());
+			if (getHealth()<100) {
+//				System.out.println(currentPosition);
+				System.out.println(nextStep);
+			}
 		}
 		
 		// if need health...

@@ -78,6 +78,19 @@ public class util {
 		return to;
 	}
 	
+	public static Direction getMyDirection(Coordinate from, Coordinate to) {
+		if (to.x>from.x && to.y==from.y) {
+			return Direction.EAST;
+		}else if(to.x<from.x && to.y==from.y) {
+			return Direction.WEST;
+		}else if(to.x==from.x && to.y>from.y) {
+			return Direction.NORTH;
+		}else if(to.x==from.x && to.y<from.y) {
+			return Direction.SOUTH;
+		}
+		return null;
+	}
+	
 	public static Coordinate getFinal(HashMap<Coordinate, MapTile> map) {
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
 			if (entry.getValue().getType().equals(Type.FINISH)) {

@@ -1,6 +1,7 @@
 package mycontroller.movestrategies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,36 +20,51 @@ import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
-	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
-	static ArrayList<Coordinate> visits = new ArrayList<Coordinate>();
-	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
+//	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
+	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
+//	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> view, 
             Coordinate from) {
 		
-		updateExplored(view);
-		updateMap(view);
+//		updateExplored(view);
+//		updateMap(view);
 		ArrayList<Coordinate> allValidRoads = getRoadsInView(view, from);
-		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
-		ArrayList<Coordinate> path = new ArrayList<>();
+//		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
+		ArrayList<Coordinate> current_path = new ArrayList<>();
+		ArrayList<Coordinate> available_path = new ArrayList<>();
 		Coordinate nextStep = null;
-		path.add(from);
+		Random randomGenerator = new Random();
+		
 		for (Coordinate validRoad: allValidRoads) {
-			System.out.println("loop");
-			if (visits.contains(validRoad)) {
-				continue;
+			if (!visits.containsKey(validRoad)) {
+				visits.put(validRoad,0);
+				available_path.add(validRoad);
 			}
+		}
+		if (available_path.size()>0) {
+			int index = randomGenerator.nextInt(available_path.size());
+			nextStep = available_path.get(index);
+		}else {
+			int index = randomGenerator.nextInt(allValidRoads.size());
+			nextStep = allValidRoads.get(index);
+		}
+		
+		
+		current_path.add(from);
+		current_path.add(nextStep);
+//		System.out.println(current_path);
+		visits.put(nextStep,visits.get(nextStep)+1);
 //			path = AStar.getPath(incompleteMap, from, validRoad);
-			path.add(validRoad);
+
 			
 //			if (path == null) {
 ////				visits.add(validRoad);
 //				continue;
 //			}
 //			validRoads.put(validRoad,path);
-		}
-//		
+
 //		if(validRoads.isEmpty()) {
 //			
 //			Random randomGenerator = new Random();
@@ -71,42 +87,66 @@ public class ExploreStrategy implements Pathable{
 //				   visits.add(x);
 //			}
 //		
-		return path;
+		return current_path;
 	}
 	
-	private static void updateExplored(HashMap<Coordinate, MapTile> view) {
-		for (Entry<Coordinate, MapTile> entry : view.entrySet()) {
-			seens.add(entry.getKey());
+//	private static void updateExplored(HashMap<Coordinate, MapTile> view) {
+//		for (Entry<Coordinate, MapTile> entry : view.entrySet()) {
+//			seens.add(entry.getKey());
+//		}
+//	}
+	
+//	private static void updateMap(HashMap<Coordinate, MapTile> view) {
+//		incompleteMap.putAll(view);
+//	}
+	
+//	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
+//		// Check tiles if they are safe to move to
+//		HashMap<Coordinate, String> neighbours = util.getAllNeighbours(map, currentPosition);
+////		System.out.println(neighbours);
+//		ArrayList<Coordinate> areRoads = new ArrayList<Coordinate>();
+//		
+//		for (Entry<Coordinate, String> entry : neighbours.entrySet()) {
+//			if (entry.getValue().equals("ROAD")) {
+//				areRoads.add(entry.getKey());
+//			}
+//		}
+//		return areRoads;
+//	}
+	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
+		Direction direction = util.getMyDirection(current,grass);
+		Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
+		Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
+		if(view.containsKey(grass_two_next)) {
+			if (view.get(grass_one_next).isType(Type.ROAD)){
+				return true;
+			}else if(view.get(grass_one_next).isType(Type.TRAP)) {
+	    		if (util.getTrapType(view, grass_one_next).equals("grass")){
+	    			return isSafeGrass( view, grass_one_next, grass_two_next);
+	    		}
+	    	}
 		}
+		return false;
 	}
 	
-	private static void updateMap(HashMap<Coordinate, MapTile> view) {
-		incompleteMap.putAll(view);
-	}
-	
-	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
-		// Check tiles if they are safe to move to
-		HashMap<Coordinate, String> neighbours = util.getAllNeighbours(map, currentPosition);
-//		System.out.println(neighbours);
-		ArrayList<Coordinate> areRoads = new ArrayList<Coordinate>();
-		
-		for (Entry<Coordinate, String> entry : neighbours.entrySet()) {
-			if (entry.getValue().equals("ROAD")) {
-				areRoads.add(entry.getKey());
-			}
-		}
-		return areRoads;
-	}
 	
 	private static ArrayList<Coordinate> getRoadsInView(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
 		
 		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
 
 	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
-	        MapTile mapTile = pair.getValue();
-	        Coordinate viewLocation = pair.getKey();
-	        if (mapTile.isType(Type.ROAD) && util.getAllNeighbours(view, currentPosition).containsKey(viewLocation)) {
-	        	roads.add((Coordinate) pair.getKey());
+	        MapTile mapTile = (MapTile) pair.getValue();
+	        Coordinate viewLocation = (Coordinate) pair.getKey();
+	        if (util.getAllNeighbours(view, currentPosition).containsKey(viewLocation)) {
+	        	if (mapTile.isType(Type.ROAD)) {
+	        		roads.add((Coordinate) pair.getKey());
+	        	}else if(mapTile.isType(Type.TRAP)) {
+	        		if (util.getTrapType(view, viewLocation).equals("grass")){
+	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
+		        			roads.add(viewLocation);
+	        			}
+	        		}
+	        	}
 	        }
 	        
 //	        if (mapTile.isType(Type.TRAP)) {
@@ -118,42 +158,42 @@ public class ExploreStrategy implements Pathable{
 		return roads;
 	}
 	
-	private static Coordinate getFurtherest(Set<Coordinate> set, Coordinate from){
+//	private static Coordinate getFurtherest(Set<Coordinate> set, Coordinate from){
+//
+//		Coordinate furtherestPoint = null;
+//		float maxDistance = 0.0f;
+//		
+//		for (Coordinate coordinate: set) {
+//			float distance = util.getDistanceEucl(coordinate,getExploredCenter());
+//			if (distance > maxDistance) {
+//				furtherestPoint = coordinate;
+//			}
+//		}
+//		if (furtherestPoint == null)
+////			System.out.println(coordinates);
+//			System.out.println("No max distance is found!"); 
+//		return furtherestPoint;
+//	}
 
-		Coordinate furtherestPoint = null;
-		float maxDistance = 0.0f;
-		
-		for (Coordinate coordinate: set) {
-			float distance = util.getDistanceEucl(coordinate,getExploredCenter());
-			if (distance > maxDistance) {
-				furtherestPoint = coordinate;
-			}
-		}
-		if (furtherestPoint == null)
-//			System.out.println(coordinates);
-			System.out.println("No max distance is found!"); 
-		return furtherestPoint;
-	}
+//	private static Coordinate getRandomLocation(ArrayList<Coordinate> coordinates){
+//		Random randomGenerator = new Random();
+//		int randomSelect = randomGenerator.nextInt(coordinates.size());
+//		return coordinates.get(randomSelect);
+//	}
 
-	private static Coordinate getRandomLocation(ArrayList<Coordinate> coordinates){
-		Random randomGenerator = new Random();
-		int randomSelect = randomGenerator.nextInt(coordinates.size());
-		return coordinates.get(randomSelect);
-	}
-
-	private void updateAstar() {
-		
-	}
-	
-	private static Coordinate getExploredCenter() {
-		double sumX = 0.0;
-		double sumY = 0.0;
-		for (Coordinate see:seens) {
-			sumX += see.x;
-			sumY += see.y;
-		}
-		int meanX = (int) sumX/seens.size();
-		int meanY = (int) sumY/seens.size();
-		return new Coordinate(meanX, meanY);
-	}
+//	private void updateAstar() {
+//		
+//	}
+//	
+//	private static Coordinate getExploredCenter() {
+//		double sumX = 0.0;
+//		double sumY = 0.0;
+//		for (Coordinate see:seens) {
+//			sumX += see.x;
+//			sumY += see.y;
+//		}
+//		int meanX = (int) sumX/seens.size();
+//		int meanY = (int) sumY/seens.size();
+//		return new Coordinate(meanX, meanY);
+//	}
 }
