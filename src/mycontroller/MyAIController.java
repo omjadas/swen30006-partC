@@ -50,7 +50,7 @@ public class MyAIController extends CarController{
 		if (getSpeed()<1) {
 			applyForwardAcceleration();
 		}
-		if (path.size()>1) {
+		if (path != null && path.size()>1) {
 			for (Coordinate point : path.subList(1, path.size())) {
 				currentPosition = new Coordinate(getPosition());
 				Coordinate nextStep = point;
