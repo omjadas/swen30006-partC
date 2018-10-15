@@ -51,14 +51,11 @@ public class MyAIController extends CarController{
 			applyForwardAcceleration();
 		}
 		if (path.size()>1) {
-			System.out.println(path);
-			System.out.println(currentPosition);
 			for (Coordinate point : path.subList(1, path.size())) {
 				currentPosition = new Coordinate(getPosition());
 				Coordinate nextStep = point;
 				move(currentPosition, nextStep);
 			}
-			System.out.println("path greater than 1");
 		}
 		
 		// if need health...
