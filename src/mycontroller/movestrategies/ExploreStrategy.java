@@ -51,11 +51,14 @@ public class ExploreStrategy implements Pathable{
 			nextStep = allValidRoads.get(index);
 		}
 		
-		
 		current_path.add(from);
 		current_path.add(nextStep);
 //		System.out.println(current_path);
-		visits.put(nextStep,visits.get(nextStep)+1);
+		if (!visits.containsKey(from)) {
+			visits.put(from,1);
+		}else {
+			visits.put(from,visits.get(from)+1);
+		}
 //			path = AStar.getPath(incompleteMap, from, validRoad);
 
 			

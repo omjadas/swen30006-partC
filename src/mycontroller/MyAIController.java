@@ -20,6 +20,7 @@ public class MyAIController extends CarController{
 	
 	HashMap<Coordinate, MapTile> map = super.getMap();
 	private Coordinate currentPosition;
+	private boolean initiate = true;
 	
 
 	public MyAIController(Car car) {
@@ -44,6 +45,11 @@ public class MyAIController extends CarController{
 		
 		normal = true;
 		
+		if(initiate) {
+			applyForwardAcceleration();
+			initiate = false;
+		}
+		
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
@@ -55,10 +61,6 @@ public class MyAIController extends CarController{
 			Coordinate nextStep = path.get(1);
 			move(currentPosition, nextStep);
 			updateWorldMap(getView());
-			if (getHealth()<100) {
-//				System.out.println(currentPosition);
-				System.out.println(nextStep);
-			}
 		}
 		
 		// if need health...
