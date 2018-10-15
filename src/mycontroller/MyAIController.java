@@ -38,6 +38,11 @@ public class MyAIController extends CarController{
 		currentPosition  = new Coordinate(getPosition());
 		
 		// determine whether to explore
+		if (util.getKeyLocations(currentView).size() == 0) {
+			exploring = true;
+		} else {
+			normal = true;
+		}
 		
 		normal = true;
 		
@@ -51,11 +56,9 @@ public class MyAIController extends CarController{
 			applyForwardAcceleration();
 		}
 		if (path != null && path.size()>1) {
-			for (Coordinate point : path.subList(1, path.size())) {
-				currentPosition = new Coordinate(getPosition());
-				Coordinate nextStep = point;
-				move(currentPosition, nextStep);
-			}
+			currentPosition = new Coordinate(getPosition());
+			Coordinate nextStep = path.get(1);
+			move(currentPosition, nextStep);
 		}
 		
 		// if need health...
