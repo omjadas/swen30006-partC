@@ -82,12 +82,6 @@ public class ExploreStrategy implements Pathable{
 	private static void updateMap(HashMap<Coordinate, MapTile> view) {
 		incompleteMap.putAll(view);
 	}
-
-	@Override
-	public List<Coordinate> getPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
 		// Check tiles if they are safe to move to
@@ -109,15 +103,16 @@ public class ExploreStrategy implements Pathable{
 
 	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
 	        MapTile mapTile = pair.getValue();
-	        if (mapTile.isType(Type.ROAD)) {
+	        Coordinate viewLocation = pair.getKey();
+	        if (mapTile.isType(Type.ROAD) && util.getAllNeighbours(view, currentPosition).containsKey(viewLocation)) {
 	        	roads.add((Coordinate) pair.getKey());
 	        }
 	        
-	        if (mapTile.isType(Type.TRAP)) {
-	        	if (util.getTrapType(view, (Coordinate) pair.getKey()).equals("")) {
-	        		
-	        	}
-	        }
+//	        if (mapTile.isType(Type.TRAP)) {
+//	        	if (util.getTrapType(view, (Coordinate) pair.getKey()).equals("")) {
+//	        		
+//	        	}
+//	        }
 	    }
 		return roads;
 	}
