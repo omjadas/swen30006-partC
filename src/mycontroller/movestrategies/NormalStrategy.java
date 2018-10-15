@@ -1,6 +1,7 @@
 package mycontroller.movestrategies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class NormalStrategy implements Pathable {
 		Coordinate destination = util.getFinal(map);
 		
 		ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map,from,destination);
+		
+		Collections.reverse(path);
 		
 		return path;
 	}

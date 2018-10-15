@@ -51,8 +51,14 @@ public class MyAIController extends CarController{
 			applyForwardAcceleration();
 		}
 		if (path.size()>1) {
-			Coordinate nextStep = path.get(path.size()-2);
-			move(currentPosition,nextStep);
+			System.out.println(path);
+			System.out.println(currentPosition);
+			for (Coordinate point : path.subList(1, path.size())) {
+				currentPosition = new Coordinate(getPosition());
+				Coordinate nextStep = point;
+				move(currentPosition, nextStep);
+			}
+			System.out.println("path greater than 1");
 		}
 		
 		// if need health...
@@ -113,7 +119,7 @@ public class MyAIController extends CarController{
 		if (current.equals(next)) {
 			applyBrake();
 			System.out.println("stopping the car");
-		}else {
+		} else {
 			Direction nextOrientation = getNextOrientation(current,next);
 			go(nextOrientation,getOrientation());
 		}
