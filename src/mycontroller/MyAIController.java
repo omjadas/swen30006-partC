@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import controller.CarController;
 import mycontroller.movestrategies.ExploreStrategy;
+import mycontroller.movestrategies.NormalStrategy;
 import mycontroller.util.util;
 import tiles.LavaTrap;
 import tiles.MapTile;
@@ -18,7 +19,6 @@ import world.WorldSpatial.Direction;
 public class MyAIController extends CarController{
 	
 	HashMap<Coordinate, MapTile> map = super.getMap();
-	ArrayList<Coordinate> keys = new ArrayList<Coordinate>();
 	private Coordinate currentPosition;
 	
 
@@ -29,18 +29,30 @@ public class MyAIController extends CarController{
 
 	@Override
 	public void update() {
-			
+		boolean exploring = false;
+		boolean normal = false;
+		ArrayList<Coordinate> path = null;
+		
 		HashMap<Coordinate, MapTile> currentView = getView();
+
+		currentPosition  = new Coordinate(getPosition());
+		
+		// determine whether to explore
+		
+		normal = true;
+		
+		if (exploring) {
+			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
+		} else if (normal) {
+			path = (ArrayList<Coordinate>) new NormalStrategy().getPath(map, currentPosition);
+		}
+		
 		if (getSpeed()<1) {
 			applyForwardAcceleration();
 		}
-		currentPosition  = new Coordinate(getPosition());
-		ArrayList<Coordinate> path = (ArrayList<Coordinate>) ExploreStrategy.getPath(map, currentPosition);
-		
 		if (path.size()>1) {
 			Coordinate nextStep = path.get(path.size()-2);
 			move(currentPosition,nextStep);
-			
 		}
 		
 		// if need health...

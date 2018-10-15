@@ -20,23 +20,12 @@ import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 
-	public static List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
-          Coordinate from) {
-		
-//		First going to the destination
-		Coordinate destination = util.getFinal(map);
-//		System.out.println(destination);
-		
-		ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map,from,destination);
-		
-		return path;
-	}
-	
 	@Override
-	public List<Coordinate> getPath() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate from) {
+		
+
 	}
+
 	
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
 //	static ArrayList<Coordinate> visits = new ArrayList<Coordinate>();
