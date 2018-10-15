@@ -82,12 +82,6 @@ public class ExploreStrategy implements Pathable{
 	private static void updateMap(HashMap<Coordinate, MapTile> view) {
 		incompleteMap.putAll(view);
 	}
-
-	@Override
-	public List<Coordinate> getPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
 		// Check tiles if they are safe to move to
