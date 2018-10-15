@@ -32,13 +32,11 @@ public class MyAIController extends CarController{
 		boolean exploring = false;
 		boolean normal = false;
 		ArrayList<Coordinate> path = null;
-		
-		HashMap<Coordinate, MapTile> currentView = getView();
 
 		currentPosition  = new Coordinate(getPosition());
 		
 		// determine whether to explore
-		if (util.getKeyLocations(currentView).size() == 0) {
+		if (util.getKeyLocations(map).size() == 0) {
 			exploring = true;
 		} else {
 			normal = true;
@@ -59,6 +57,7 @@ public class MyAIController extends CarController{
 			currentPosition = new Coordinate(getPosition());
 			Coordinate nextStep = path.get(1);
 			move(currentPosition, nextStep);
+			updateWorldMap(getView());
 		}
 		
 		// if need health...
@@ -77,8 +76,6 @@ public class MyAIController extends CarController{
 		if (currentPosition.equals(util.getFinal(map))) {
 			
 		}
-
-        updateWorldMap(currentView);
 	}
 	
 	
@@ -140,7 +137,6 @@ public class MyAIController extends CarController{
 	
 
 	public void go(Direction input, Direction orientation) {
-
 		if (input.equals(WorldSpatial.Direction.NORTH)) {
 			switch(orientation){
 			case EAST:

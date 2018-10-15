@@ -33,7 +33,7 @@ public class ExploreStrategy implements Pathable{
 		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
 		ArrayList<Coordinate> path = null;
 		Coordinate nextStep = null;
-		
+
 		for (Coordinate validRoad: allValidRoads) {
 			System.out.println("loop");
 			if (visits.contains(validRoad)) {
