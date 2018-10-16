@@ -38,6 +38,7 @@ public class ExploreStrategy implements Pathable{
 		Coordinate nextStep = null;
 		Random randomGenerator = new Random();
 		
+		// if key was just found the shortest path out of the lava is chosen
 		if (allValidRoads.size() == 0) {
 			ArrayList<ArrayList<Coordinate>> paths = new ArrayList<>();
 			for (Coordinate road : getNearbyRoads(view, from)) {
