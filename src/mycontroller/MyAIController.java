@@ -22,12 +22,15 @@ public class MyAIController extends CarController{
 	private Coordinate currentPosition;
 	private boolean initiate = true;
 	private Car car;
+	private int numKeys;
+	private int totalKeys = 0;
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
 	
 
 	public MyAIController(Car car) {
 		super(car);
 		this.car = car;
+		numKeys = car.numKeys;
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class MyAIController extends CarController{
 		currentPosition  = new Coordinate(getPosition());
 		
 		// determine whether to explore
-		if (util.getKeyLocations(map).size() == 0) {
+		if (util.getKeyLocations(map).size() == 0 && util.getKeyLocations(map).size() != numKeys) {
 			exploring = true;
 		} else {
 			for (Coordinate key : util.getKeyLocations(map)) {
@@ -55,9 +58,11 @@ public class MyAIController extends CarController{
 			initiate = false;
 		}
 		
+		
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
+			totalKeys++;
 			path = (ArrayList<Coordinate>) new NormalStrategy(getHealth(), keysOrdered, car.getKeys().size()).getPath(map, currentPosition);
 		}
 		
