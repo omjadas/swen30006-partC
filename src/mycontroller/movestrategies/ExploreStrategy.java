@@ -31,8 +31,8 @@ public class ExploreStrategy implements Pathable{
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
 	public ExploreStrategy() {
-		for(int x = 0 ; x<=World.MAP_WIDTH; x++) {
-			for(int y = 0 ; y<=World.MAP_HEIGHT ; y++) {
+		for(int x = 0 ; x < World.MAP_WIDTH; x++) {
+			for(int y = 0 ; y < World.MAP_HEIGHT ; y++) {
 				all.add(new Coordinate(x,y));
 			}
 		}
