@@ -2,6 +2,7 @@ package mycontroller.movestrategies;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,9 +38,29 @@ public class ExploreStrategy implements Pathable{
 		Coordinate nextStep = null;
 		Random randomGenerator = new Random();
 		
-//		if (allValidRoads.size() == 0) {
-//			current_path = AStar.getPath(view, from, to)
-//		}
+		if (allValidRoads.size() == 0) {
+			ArrayList<ArrayList<Coordinate>> paths = new ArrayList<>();
+			for (Coordinate road : getNearbyRoads(view, from)) {
+				paths.add(AStar.getPath(view, from, road));
+			}
+			paths.removeAll(Collections.singleton(null));
+			return Collections.min(paths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
+				int p1l = 0;
+				int p2l = 0;
+				System.out.println(p1);
+				for (Coordinate coord : p1) {
+					if (util.getTrapType(view, coord).equals("lava")) {
+						p1l += 1;
+					}
+				}
+				for (Coordinate coord : p2) {
+					if (util.getTrapType(view, coord).equals("lava")) {
+						p2l += 1;
+					}
+				}
+				return p1l - p2l;
+			});
+		}
 		
 		for (Coordinate validRoad: allValidRoads) {
 			if (!visits.containsKey(validRoad)) {
@@ -136,6 +157,26 @@ public class ExploreStrategy implements Pathable{
 		return false;
 	}
 	
+	
+	private static ArrayList<Coordinate> getNearbyRoads(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
+		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
+	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
+	        MapTile mapTile = (MapTile) pair.getValue();
+	        Coordinate viewLocation = (Coordinate) pair.getKey();
+	        if (util.getNearby(view, currentPosition, 4).containsKey(viewLocation)) {
+	        	if (mapTile.isType(Type.ROAD)) {
+	        		roads.add((Coordinate) pair.getKey());
+	        	}else if(mapTile.isType(Type.TRAP)) {
+	        		if (util.getTrapType(view, viewLocation).equals("grass")){
+	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
+		        			roads.add(viewLocation);
+	        			}
+	        		}
+	        	}
+	        }
+	    }
+		return roads;
+	}
 	
 	private static ArrayList<Coordinate> getRoadsInView(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
 		

@@ -39,6 +39,18 @@ public class util {
 //		return null;
 	}
 	
+	public static HashMap<Coordinate, String> getNearby(HashMap<Coordinate, MapTile> map, Coordinate position, int radius){
+		if (radius == 1) {
+			return getAllNeighbours(map, position);
+		}
+		HashMap<Coordinate, String> nearby = new HashMap<Coordinate, String>();
+		for (Entry<Coordinate, String> coord : getAllNeighbours(map, position).entrySet()) {
+	        Coordinate coordinate = (Coordinate) coord.getKey();
+	        nearby.putAll(getNearby(map, coordinate, radius - 1));
+		}
+		return nearby;
+	}
+	
 	public static HashMap<Coordinate, String> getAllNeighbours(HashMap<Coordinate, MapTile> map, Coordinate position){
 
 		final ArrayList<Coordinate> allNeighbours = new ArrayList<Coordinate>();
