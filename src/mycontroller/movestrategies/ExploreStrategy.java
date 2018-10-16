@@ -99,63 +99,10 @@ public class ExploreStrategy implements Pathable{
 		}else {
 			visits.put(from,visits.get(from)+1);
 		}
-//			path = AStar.getPath(incompleteMap, from, validRoad);
-
-			
-//			if (path == null) {
-////				visits.add(validRoad);
-//				continue;
-//			}
-//			validRoads.put(validRoad,path);
-
-//		if(validRoads.isEmpty()) {
-//			
-//			Random randomGenerator = new Random();
-//			int randomSelect = randomGenerator.nextInt(visits.size());
-//			nextStep = visits.get(randomSelect); 
-//			
-//			path = AStar.getPath(incompleteMap, from, nextStep);
-//			System.out.println("go back to " + nextStep);
-//			
-////			ArrayList<Coordinate> neighbours = checkRoads(incompleteMap, from);
-////			System.out.println(neighbours.get(1));
-////			path = AStar.getPath(incompleteMap, from, neighbours.get(1));
-//		}else {
-//			nextStep = getFurtherest(validRoads.keySet(),from);	
-//			path = validRoads.get(nextStep);
-//		}
-//		
-//		for (Coordinate x : path){
-//			   if (!visits.contains(x))
-//				   visits.add(x);
-//			}
-//		
 		return current_path;
 	}
 	
-//	private static void updateExplored(HashMap<Coordinate, MapTile> view) {
-//		for (Entry<Coordinate, MapTile> entry : view.entrySet()) {
-//			seens.add(entry.getKey());
-//		}
-//	}
 	
-//	private static void updateMap(HashMap<Coordinate, MapTile> view) {
-//		incompleteMap.putAll(view);
-//	}
-	
-//	public static ArrayList<Coordinate> checkRoads(HashMap<Coordinate, MapTile> map, Coordinate currentPosition){
-//		// Check tiles if they are safe to move to
-//		HashMap<Coordinate, String> neighbours = util.getAllNeighbours(map, currentPosition);
-////		System.out.println(neighbours);
-//		ArrayList<Coordinate> areRoads = new ArrayList<Coordinate>();
-//		
-//		for (Entry<Coordinate, String> entry : neighbours.entrySet()) {
-//			if (entry.getValue().equals("ROAD")) {
-//				areRoads.add(entry.getKey());
-//			}
-//		}
-//		return areRoads;
-//	}
 	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
 		Direction direction = util.getMyDirection(current,grass);
 		Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);

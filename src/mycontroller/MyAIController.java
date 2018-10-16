@@ -53,7 +53,7 @@ public class MyAIController extends CarController{
 			}
 			normal = true;
 		}
-				
+					
 		
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
