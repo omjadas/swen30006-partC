@@ -15,9 +15,6 @@ public class NormalStrategy implements Pathable {
 
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate from) {
-//		First going to the destination
-		
-		
 		Coordinate destination = util.getFinal(map);
 		
 		ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map,from,destination);
