@@ -26,12 +26,12 @@ public class ExploreStrategy implements Pathable{
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
 	@Override
-	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> view, 
+	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
 		
 //		updateExplored(view);
 //		updateMap(view);
-		ArrayList<Coordinate> allValidRoads = getRoadsInView(view, from);
+		ArrayList<Coordinate> allValidRoads = getRoadsInView(map, from);
 //		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
 		ArrayList<Coordinate> current_path = new ArrayList<>();
 		ArrayList<Coordinate> available_path = new ArrayList<>();
@@ -41,8 +41,8 @@ public class ExploreStrategy implements Pathable{
 		// if key was just found the shortest path out of the lava is chosen
 		if (allValidRoads.size() == 0) {
 			ArrayList<ArrayList<Coordinate>> paths = new ArrayList<>();
-			for (Coordinate road : getNearbyRoads(view, from)) {
-				paths.add(AStar.getPath(view, from, road));
+			for (Coordinate road : getNearbyRoads(map, from)) {
+				paths.add(AStar.getPath(map, from, road));
 			}
 			paths.removeAll(Collections.singleton(null));
 			return Collections.min(paths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
@@ -50,12 +50,12 @@ public class ExploreStrategy implements Pathable{
 				int p2l = 0;
 				System.out.println(p1);
 				for (Coordinate coord : p1) {
-					if (util.getTrapType(view, coord).equals("lava")) {
+					if (util.getTrapType(map, coord).equals("lava")) {
 						p1l += 1;
 					}
 				}
 				for (Coordinate coord : p2) {
-					if (util.getTrapType(view, coord).equals("lava")) {
+					if (util.getTrapType(map, coord).equals("lava")) {
 						p2l += 1;
 					}
 				}
@@ -73,9 +73,23 @@ public class ExploreStrategy implements Pathable{
 			int index = randomGenerator.nextInt(available_path.size());
 			nextStep = available_path.get(index);
 		} else {
+			Coordinate destination =  util.getFinal(map);
+			// if this car has not visited the final
+			if(!visits.containsKey(destination)) {
+				// use A star to go to the final destination to stay away from the familiar regions
+				ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map, from, util.getFinal(map));
+				if (path.size()>1) {
+					nextStep = path.get(path.size()-2); // move to the next step given by A star
+				}
+//				System.out.println(""+from+nextStep);
+			}
+		}
+		if (nextStep==null) { // use random walk selected from previously visited mpaTiles.
 			int index = randomGenerator.nextInt(allValidRoads.size());
 			nextStep = allValidRoads.get(index);
 		}
+		
+		System.out.println(nextStep);
 		
 		current_path.add(from);
 		current_path.add(nextStep);
@@ -194,6 +208,8 @@ public class ExploreStrategy implements Pathable{
 	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
 		        			roads.add(viewLocation);
 	        			}
+	        		}else if (util.getTrapType(view, viewLocation).equals("health")){
+		        		roads.add(viewLocation);
 	        		}
 	        	}
 	        }

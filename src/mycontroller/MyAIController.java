@@ -39,8 +39,8 @@ public class MyAIController extends CarController{
 		boolean exploring = false;
 		boolean normal = false;
 		ArrayList<Coordinate> path = null;
-
 		currentPosition  = new Coordinate(getPosition());
+		updateWorldMap(getView());
 		
 		// determine whether to explore
 		if (util.getKeyLocations(map).size() == 0 && numKeys() != 0) {
@@ -53,16 +53,12 @@ public class MyAIController extends CarController{
 			}
 			normal = true;
 		}
-		
-		if(initiate) {
-			applyForwardAcceleration();
-			initiate = false;
-		}
-		
+				
 		
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
+			// if lava is blocking the way, and the side of the map is completed, then move to the other side of the lava no matter how fast lava is
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
 			
@@ -72,12 +68,31 @@ public class MyAIController extends CarController{
 			}
 		}
 		
-		
+		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());
-			Coordinate nextStep = path.get(1);
+			nextStep = path.get(1);
 			move(currentPosition, nextStep);
 			updateWorldMap(getView());
+		}
+		
+		if(initiate) {
+			MapTile mapTile = map.get(util.getNeighbourCoordinate(currentPosition,getOrientation()));
+			String trapType = "";
+			if (mapTile.isType(Type.TRAP)) {
+				trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,getOrientation()));
+			}
+			if (!mapTile.isType(Type.WALL) && !trapType.equals("mud")) {
+				applyForwardAcceleration();
+			}else {
+				applyReverseAcceleration();
+			}
+			initiate = false;
+		}else {
+			if (getHealth() == 100 && map.get(currentPosition).isType(Type.TRAP)) {
+				initiate = true;	
+			}
+			
 		}
 		
 		// if need health...
@@ -135,7 +150,7 @@ public class MyAIController extends CarController{
 	private void move(Coordinate current, Coordinate next) {
 		if (current.equals(next)) {
 			applyBrake();
-			System.out.println("stopping the car");
+//			System.out.println("stopping the car");
 		} else {
 			Direction nextOrientation = getNextOrientation(current,next);
 			go(nextOrientation,getOrientation());

@@ -13,7 +13,7 @@ import utilities.Coordinate;
 public class AStar {
 	
 	private static float COST_LAVA = 100.0f;
-	private static float COST_HEALTH = 1f;
+	private static float DEFAULT = 2f;
 	private static float COST_MUD = Float.MAX_VALUE;
 	private static float COST_GRASS = 10f;
 	
@@ -133,12 +133,12 @@ public class AStar {
 			}else if (trap.getTrap() == "grass") {
 				return COST_GRASS;
 			}else if (trap.getTrap() == "health"){
-				return COST_HEALTH;
+				return DEFAULT;
 			}else {
-				return 2f; 
+				return DEFAULT; 
 			}	
 		}else {
-			return 2f;
+			return DEFAULT;
 		}
 			
 	}
@@ -149,7 +149,6 @@ public class AStar {
 	
 	public void update(float lava, float health, float grass) {
 		COST_LAVA = lava;
-		COST_HEALTH = health;
 		COST_GRASS = grass;
 	}
 	

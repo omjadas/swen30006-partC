@@ -112,6 +112,15 @@ public class util {
 		return null;
 	}
 	
+	public static Coordinate getStart(HashMap<Coordinate, MapTile> map) {
+		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
+			if (entry.getValue().getType().equals(Type.START)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	
 	public static ArrayList<Coordinate> getKeyLocations(HashMap<Coordinate, MapTile> map) {
 		ArrayList<Coordinate> keys = new ArrayList<Coordinate>();
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
