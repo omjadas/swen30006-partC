@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +18,28 @@ import tiles.MapTile;
 import tiles.MapTile.Type;
 import tiles.TrapTile;
 import utilities.Coordinate;
+import world.World;
 import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
+	Set<Coordinate> seen = new HashSet<>();
+	
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
-		
+	
+		for(int x = from.x - 4; x<=from.x+4;x++) {
+			for(int y = from.y -4 ; y<=from.y+4;y++) {
+				if((x>0 && y>0) && (x < World.MAP_WIDTH && y < World.MAP_HEIGHT)) {
+					seen.add(new Coordinate(x,y));
+				}
+			}
+		}
 //		updateExplored(view);
 //		updateMap(view);
 		ArrayList<Coordinate> allValidRoads = getRoadsInView(map, from);
@@ -143,7 +154,6 @@ public class ExploreStrategy implements Pathable{
 	private static ArrayList<Coordinate> getRoadsInView(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
 		
 		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
-
 	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
 	        MapTile mapTile = (MapTile) pair.getValue();
 	        Coordinate viewLocation = (Coordinate) pair.getKey();
