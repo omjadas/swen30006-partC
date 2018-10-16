@@ -170,52 +170,7 @@ public class ExploreStrategy implements Pathable{
 	        		}
 	        	}
 	        }
-	        
-//	        if (mapTile.isType(Type.TRAP)) {
-//	        	if (util.getTrapType(view, (Coordinate) pair.getKey()).equals("")) {
-//	        		
-//	        	}
-//	        }
 	    }
 		return roads;
 	}
-	
-//	private static Coordinate getFurtherest(Set<Coordinate> set, Coordinate from){
-//
-//		Coordinate furtherestPoint = null;
-//		float maxDistance = 0.0f;
-//		
-//		for (Coordinate coordinate: set) {
-//			float distance = util.getDistanceEucl(coordinate,getExploredCenter());
-//			if (distance > maxDistance) {
-//				furtherestPoint = coordinate;
-//			}
-//		}
-//		if (furtherestPoint == null)
-////			System.out.println(coordinates);
-//			System.out.println("No max distance is found!"); 
-//		return furtherestPoint;
-//	}
-
-//	private static Coordinate getRandomLocation(ArrayList<Coordinate> coordinates){
-//		Random randomGenerator = new Random();
-//		int randomSelect = randomGenerator.nextInt(coordinates.size());
-//		return coordinates.get(randomSelect);
-//	}
-
-//	private void updateAstar() {
-//		
-//	}
-//	
-//	private static Coordinate getExploredCenter() {
-//		double sumX = 0.0;
-//		double sumY = 0.0;
-//		for (Coordinate see:seens) {
-//			sumX += see.x;
-//			sumY += see.y;
-//		}
-//		int meanX = (int) sumX/seens.size();
-//		int meanY = (int) sumY/seens.size();
-//		return new Coordinate(meanX, meanY);
-//	}
 }
