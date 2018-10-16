@@ -70,8 +70,8 @@ public class ExploreStrategy implements Pathable{
 			}
 		}
 		if (available_path.size()>0) {
-			int index = randomGenerator.nextInt(available_path.size());
-			nextStep = available_path.get(index);
+//			int index = randomGenerator.nextInt(available_path.size());
+			nextStep = available_path.get(0);
 		} else {
 			Coordinate destination =  util.getFinal(map);
 			// if this car has not visited the final
