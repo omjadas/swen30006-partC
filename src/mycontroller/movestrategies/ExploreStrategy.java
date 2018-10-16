@@ -24,11 +24,20 @@ import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
-	Set<Coordinate> seen = new HashSet<>();
+	private Set<Coordinate> seen = new HashSet<>();
+	private Set<Coordinate> all = new HashSet<>();
 	
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
+	public ExploreStrategy() {
+		for(int x = 0 ; x<=World.MAP_WIDTH; x++) {
+			for(int y = 0 ; y<=World.MAP_HEIGHT ; y++) {
+				all.add(new Coordinate(x,y));
+			}
+		}
+	}
+	
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
