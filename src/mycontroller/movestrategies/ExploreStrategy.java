@@ -37,6 +37,10 @@ public class ExploreStrategy implements Pathable{
 		Coordinate nextStep = null;
 		Random randomGenerator = new Random();
 		
+//		if (allValidRoads.size() == 0) {
+//			current_path = AStar.getPath(view, from, to)
+//		}
+		
 		for (Coordinate validRoad: allValidRoads) {
 			if (!visits.containsKey(validRoad)) {
 				visits.put(validRoad,0);
@@ -46,7 +50,7 @@ public class ExploreStrategy implements Pathable{
 		if (available_path.size()>0) {
 			int index = randomGenerator.nextInt(available_path.size());
 			nextStep = available_path.get(index);
-		}else {
+		} else {
 			int index = randomGenerator.nextInt(allValidRoads.size());
 			nextStep = allValidRoads.get(index);
 		}

@@ -24,12 +24,14 @@ public class MyAIController extends CarController{
 	private Car car;
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
 	private NormalStrategy normalStrategy;
+	private ExploreStrategy exploreStrategy;
 	
 
 	public MyAIController(Car car) {
 		super(car);
 		this.car = car;
 		normalStrategy = new NormalStrategy(numKeys());
+		exploreStrategy = new ExploreStrategy();
 	}
 
 	@Override
@@ -66,6 +68,7 @@ public class MyAIController extends CarController{
 			
 			if (path == null) {
 				// look for more keys
+				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 			}
 		}
 		
