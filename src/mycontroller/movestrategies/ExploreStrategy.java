@@ -24,8 +24,7 @@ import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
-	private Set<Coordinate> seen = new HashSet<>();
-	private Set<Coordinate> all = new HashSet<>();
+	private Set<Coordinate> notSeen = new HashSet<>();
 	
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
@@ -33,7 +32,7 @@ public class ExploreStrategy implements Pathable{
 	public ExploreStrategy() {
 		for(int x = 0 ; x < World.MAP_WIDTH; x++) {
 			for(int y = 0 ; y < World.MAP_HEIGHT ; y++) {
-				all.add(new Coordinate(x,y));
+				notSeen.add(new Coordinate(x,y));
 			}
 		}
 	}
@@ -45,7 +44,7 @@ public class ExploreStrategy implements Pathable{
 		for(int x = from.x - 4; x<=from.x+4;x++) {
 			for(int y = from.y -4 ; y<=from.y+4;y++) {
 				if((x>0 && y>0) && (x < World.MAP_WIDTH && y < World.MAP_HEIGHT)) {
-					seen.add(new Coordinate(x,y));
+					notSeen.remove(new Coordinate(x,y));
 				}
 			}
 		}
