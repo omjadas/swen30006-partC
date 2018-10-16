@@ -23,7 +23,7 @@ public class util {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
 	
-	public static String getTrapType (HashMap<Coordinate, MapTile> map, Coordinate coordinate) {
+	public static String getTrapType(HashMap<Coordinate, MapTile> map, Coordinate coordinate) {
 		MapTile mapTile = map.get(coordinate);
 //		System.out.println(mapTile.getType().toString());
 		if (mapTile != null) {

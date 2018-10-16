@@ -23,11 +23,13 @@ public class MyAIController extends CarController{
 	private boolean initiate = true;
 	private Car car;
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
+	private NormalStrategy normalStrategy;
 	
 
 	public MyAIController(Car car) {
 		super(car);
 		this.car = car;
+		normalStrategy = new NormalStrategy();
 	}
 
 	@Override
@@ -59,8 +61,11 @@ public class MyAIController extends CarController{
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
-			path = (ArrayList<Coordinate>) new NormalStrategy(getHealth(), keysOrdered, car.getKeys().size()).getPath(map, currentPosition);
+			normalStrategy.update(getHealth(), keysOrdered, car.getKeys().size());
+			
+			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
 		}
+		
 		
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());
