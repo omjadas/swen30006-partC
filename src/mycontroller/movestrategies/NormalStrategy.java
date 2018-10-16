@@ -16,13 +16,10 @@ public class NormalStrategy implements Pathable {
 	private ArrayList<Coordinate> foundKeys;
 	private int collectedKeys;
 	private int unreachable = 0;
+	private int totalKeys;
 	
-	public NormalStrategy() {}
-	
-	public NormalStrategy(float health, ArrayList<Coordinate> foundKeys, int collectedKeys) {
-		this.health = health;
-		this.foundKeys = foundKeys;
-		this.collectedKeys = collectedKeys;
+	public NormalStrategy(int totalKeys) {
+		this.totalKeys = totalKeys;
 	}
 
 	public void update(float health, ArrayList<Coordinate> foundKeys, int collectedKeys) {
@@ -56,7 +53,8 @@ public class NormalStrategy implements Pathable {
 
 		if (path == null) {
 			unreachable += 1;
-			return null;
+			System.out.println("recurse");
+			return getPath(map, from);
 		}
 		
 		Collections.reverse(path);
