@@ -65,8 +65,6 @@ public class MyAIController extends CarController{
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
 		}
 		
-		System.out.println(path);
-		
 		
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());

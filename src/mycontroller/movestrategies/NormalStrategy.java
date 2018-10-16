@@ -33,7 +33,7 @@ public class NormalStrategy implements Pathable {
 	
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate from) {
-		System.out.println("\n");
+		ArrayList<Coordinate> path = new ArrayList<Coordinate>();
 		Coordinate destination;
 		int healthMultiplier = 2;
 		if ((collectedKeys + unreachable) < foundKeys.size()) {
@@ -43,10 +43,16 @@ public class NormalStrategy implements Pathable {
 			healthMultiplier = 1;
 		}
 		
-		System.out.println(from);
-		System.out.println(destination);
-		ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map, from, destination);
-		System.out.println(path);
+		// wait for full health
+		for (Coordinate location : util.getHealthLocations(map)) {
+			if (from.equals(location) && health < 100.0) {
+				path.add(from);
+				path.add(from);
+				return path;
+			}
+		}
+		
+		path = (ArrayList<Coordinate>) AStar.getPath(map, from, destination);
 
 		if (path == null) {
 			unreachable += 1;
@@ -62,14 +68,16 @@ public class NormalStrategy implements Pathable {
 			}
 		}
 		
-		if ((healthNeeded * healthMultiplier) >= health) {
-			path = getHealth(map, from);
+		healthNeeded *= healthMultiplier;
+		
+		if (healthNeeded >= health) {
+			path = getHealth(map, from, healthNeeded);
 		}
 		
 		return path;
 	}
 	
-	private ArrayList<Coordinate> getHealth(HashMap<Coordinate, MapTile> map, Coordinate from) {
+	private ArrayList<Coordinate> getHealth(HashMap<Coordinate, MapTile> map, Coordinate from, int need) {
 		ArrayList<Coordinate> locations = util.getHealthLocations(map);
 		ArrayList<Coordinate> path = null;
 		
@@ -86,6 +94,9 @@ public class NormalStrategy implements Pathable {
 			}
 			if ((healthNeeded) >= health) {
 				continue;
+			}
+			for (int i = need ; i >=0 ; i-=1) {
+				path.add(location);
 			}
 			break;
 		}
