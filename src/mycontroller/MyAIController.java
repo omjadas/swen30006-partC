@@ -21,11 +21,13 @@ public class MyAIController extends CarController{
 	HashMap<Coordinate, MapTile> map = super.getMap();
 	private Coordinate currentPosition;
 	private boolean initiate = true;
+	private Car car;
+	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
 	
 
 	public MyAIController(Car car) {
 		super(car);
-		
+		this.car = car;
 	}
 
 	@Override
@@ -40,10 +42,13 @@ public class MyAIController extends CarController{
 		if (util.getKeyLocations(map).size() == 0) {
 			exploring = true;
 		} else {
+			for (Coordinate key : util.getKeyLocations(map)) {
+				if (!keysOrdered.contains(key)) {
+					keysOrdered.add(key);
+				}
+			}
 			normal = true;
 		}
-		
-		normal = true;
 		
 		if(initiate) {
 			applyForwardAcceleration();
@@ -53,7 +58,7 @@ public class MyAIController extends CarController{
 		if (exploring) {
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
-			path = (ArrayList<Coordinate>) new NormalStrategy().getPath(map, currentPosition);
+			path = (ArrayList<Coordinate>) new NormalStrategy(getHealth(), keysOrdered, car.getKeys().size()).getPath(map, currentPosition);
 		}
 		
 		if (path != null && path.size()>1) {
