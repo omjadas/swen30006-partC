@@ -41,7 +41,7 @@ public class MyAIController extends CarController{
 		currentPosition  = new Coordinate(getPosition());
 		
 		// determine whether to explore
-		if (util.getKeyLocations(map).size() == 0 && util.getKeyLocations(map).size() != numKeys()) {
+		if (util.getKeyLocations(map).size() == 0 && numKeys() != 0) {
 			exploring = true;
 		} else {
 			for (Coordinate key : util.getKeyLocations(map)) {
@@ -63,6 +63,10 @@ public class MyAIController extends CarController{
 		} else if (normal) {
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
+			
+			if (path == null) {
+				// look for more keys
+			}
 		}
 		
 		

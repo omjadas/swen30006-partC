@@ -35,7 +35,11 @@ public class NormalStrategy implements Pathable {
 		int healthMultiplier = 2;
 		if ((collectedKeys + unreachable) < foundKeys.size()) {
 			destination = foundKeys.get(collectedKeys + unreachable);
-		} else {
+		}
+//		else if (collectedKeys < totalKeys) {
+//			return null;
+//		}
+		else {
 			destination = util.getFinal(map);
 			healthMultiplier = 1;
 		}
