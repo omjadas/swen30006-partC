@@ -62,9 +62,10 @@ public class MyAIController extends CarController{
 			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
 		} else if (normal) {
 			normalStrategy.update(getHealth(), keysOrdered, car.getKeys().size());
-			
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
 		}
+		
+		System.out.println(path);
 		
 		
 		if (path != null && path.size()>1) {
@@ -161,7 +162,6 @@ public class MyAIController extends CarController{
 				break;
 			case SOUTH:
 				applyReverseAcceleration();
-				applyBrake();
 				break;
 			case WEST:
 				turnRight();
@@ -180,7 +180,6 @@ public class MyAIController extends CarController{
 				break;
 			case WEST:
 				applyReverseAcceleration();
-				applyBrake();
 				break;
 			}
 		}else if (input.equals(WorldSpatial.Direction.SOUTH)) {
@@ -190,7 +189,6 @@ public class MyAIController extends CarController{
 				break;
 			case NORTH:
 				applyReverseAcceleration();
-				applyBrake();
 				break;
 			case SOUTH:
 				applyForwardAcceleration();
@@ -203,7 +201,6 @@ public class MyAIController extends CarController{
 			switch(orientation){
 			case EAST:
 				applyReverseAcceleration();
-				applyBrake();
 				break;
 			case NORTH:
 				turnLeft();
