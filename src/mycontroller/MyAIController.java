@@ -68,7 +68,8 @@ public class MyAIController extends CarController{
 				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 			}
 		}
-		
+
+
 		// we only need the nextStep from the path for the car to move to
 		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
@@ -104,12 +105,12 @@ public class MyAIController extends CarController{
 				applyReverseAcceleration();// apply backward speed
 			}
 			initiate = false;// now the car is initialised
-//		}else {
-//			// the car is initialised, but stops for key or health
-//			if (getHealth() == 100 && map.get(currentPosition).isType(Type.TRAP)) {
-//				// start engine again if completed the job at that location
-//				initiate = true;	
-//			}
+		}else {
+			// the car is initialised, but stops for key or health
+			if (getHealth() == 100 && map.get(currentPosition).isType(Type.TRAP)) {
+				// start engine again if completed the job at that location
+				initiate = true;	
+			}
 		}
 	}
 	
@@ -117,8 +118,7 @@ public class MyAIController extends CarController{
 	private void move(Coordinate current, Coordinate next) {
 		// if the car wants to stop
 		if (current.equals(next)) {
-//			applyBrake(); // apply brakes
-			initiate = true; // engine is off, so need to restart engine again next time
+			applyBrake(); // apply brakes
 		} else {
 			// check the orientation the car wants to go based on current and next location
 			Direction nextOrientation = getNextOrientation(current,next); 

@@ -73,6 +73,7 @@ public class NormalStrategy implements Pathable {
 			path = getHealth(map, from, healthNeeded);
 		}
 		
+		
 		return path;
 	}
 	

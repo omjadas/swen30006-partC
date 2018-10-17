@@ -25,7 +25,7 @@ import world.WorldSpatial.Direction;
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
 	private ArrayList<Coordinate> notSeen = new ArrayList<>();
-	
+	Coordinate closest_old;
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
@@ -41,7 +41,7 @@ public class ExploreStrategy implements Pathable{
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
 	
-		System.out.println(notSeen.size());
+//		System.out.println(notSeen.size());
 		
 		for(int x = from.x - 4; x<=from.x+4;x++) {
 			for(int y = from.y -4 ; y<=from.y+4;y++) {
@@ -59,10 +59,16 @@ public class ExploreStrategy implements Pathable{
 		ArrayList<Coordinate> available_path = new ArrayList<>();
 		Coordinate nextStep = null;
 		Random randomGenerator = new Random();
-		System.out.println(from);
-		Coordinate closest = Collections.min(notSeen, (Coordinate c1, Coordinate c2) -> {
-			return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
-		});
+//		System.out.println(from);
+		Coordinate closest;
+		if (!notSeen.contains(closest_old)) {
+			closest = Collections.min(notSeen, (Coordinate c1, Coordinate c2) -> {
+				return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
+			});
+			closest_old = closest;
+		}else {
+			closest = closest_old;
+		}
 		
 		List<Coordinate> path = null;
 //		System.out.println(from);
@@ -72,16 +78,22 @@ public class ExploreStrategy implements Pathable{
 //		System.out.println(notSeen.size());
 //		System.out.println("\n");
 		
-
-		if (util.getTrapType(map, closest).equals("ROAD")) {
+		
+		if (map.get(closest).isType(Type.ROAD)) {
 			path = AStar.getPath(map, from, closest);
+			if (path==null) {
+				notSeen.remove(closest);
+				path = getPath(map, from);
+			}else {
+				Collections.reverse(path);
+			}
 		} else {
 			notSeen.remove(closest);
 			path = getPath(map, from);
 		}
 		
-		Collections.reverse(path);
-		System.out.println(path);
+		
+//		System.out.println(path);
 		return path;
 		
 //		// if key was just found the shortest path out of the lava is chosen
