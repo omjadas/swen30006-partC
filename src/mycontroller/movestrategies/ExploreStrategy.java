@@ -64,22 +64,24 @@ public class ExploreStrategy implements Pathable{
 			return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
 		});
 		
-		ArrayList<Coordinate> path = null;
-		System.out.println(from);
-		System.out.println(notSeen);
-		System.out.println(closest);
-		System.out.println(util.getTrapType(map, closest));
-		System.out.println(notSeen.size());
-		System.out.println("\n");
+		List<Coordinate> path = null;
+//		System.out.println(from);
+//		System.out.println(notSeen);
+//		System.out.println(closest);
+//		System.out.println(util.getTrapType(map, closest));
+//		System.out.println(notSeen.size());
+//		System.out.println("\n");
 		
 
 		if (util.getTrapType(map, closest).equals("ROAD")) {
 			path = AStar.getPath(map, from, closest);
 		} else {
 			notSeen.remove(closest);
-			return getPath(map, from);
+			path = getPath(map, from);
 		}
 		
+		Collections.reverse(path);
+		System.out.println(path);
 		return path;
 		
 //		// if key was just found the shortest path out of the lava is chosen

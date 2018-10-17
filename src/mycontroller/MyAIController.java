@@ -117,7 +117,7 @@ public class MyAIController extends CarController{
 	private void move(Coordinate current, Coordinate next) {
 		// if the car wants to stop
 		if (current.equals(next)) {
-			applyBrake(); // apply brakes
+//			applyBrake(); // apply brakes
 			initiate = true; // engine is off, so need to restart engine again next time
 		} else {
 			// check the orientation the car wants to go based on current and next location
