@@ -24,7 +24,7 @@ import world.WorldSpatial.Direction;
 
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
-	private Set<Coordinate> notSeen = new HashSet<>();
+	private ArrayList<Coordinate> notSeen = new ArrayList<>();
 	
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
@@ -41,6 +41,8 @@ public class ExploreStrategy implements Pathable{
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
 	
+		System.out.println(notSeen.size());
+		
 		for(int x = from.x - 4; x<=from.x+4;x++) {
 			for(int y = from.y -4 ; y<=from.y+4;y++) {
 				if((x>0 && y>0) && (x < World.MAP_WIDTH && y < World.MAP_HEIGHT)) {
@@ -48,6 +50,7 @@ public class ExploreStrategy implements Pathable{
 				}
 			}
 		}
+		
 //		updateExplored(view);
 //		updateMap(view);
 		ArrayList<Coordinate> allValidRoads = getRoadsInView(map, from);
@@ -56,69 +59,92 @@ public class ExploreStrategy implements Pathable{
 		ArrayList<Coordinate> available_path = new ArrayList<>();
 		Coordinate nextStep = null;
 		Random randomGenerator = new Random();
+		System.out.println(from);
+		Coordinate closest = Collections.min(notSeen, (Coordinate c1, Coordinate c2) -> {
+			return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
+		});
 		
-		// if key was just found the shortest path out of the lava is chosen
-		if (allValidRoads.size() == 0) {
-			ArrayList<ArrayList<Coordinate>> paths = new ArrayList<>();
-			for (Coordinate road : getNearbyRoads(map, from)) {
-				paths.add(AStar.getPath(map, from, road));
-			}
-			paths.removeAll(Collections.singleton(null));
-			return Collections.min(paths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
-				int p1l = 0;
-				int p2l = 0;
-				System.out.println(p1);
-				for (Coordinate coord : p1) {
-					if (util.getTrapType(map, coord).equals("lava")) {
-						p1l += 1;
-					}
-				}
-				for (Coordinate coord : p2) {
-					if (util.getTrapType(map, coord).equals("lava")) {
-						p2l += 1;
-					}
-				}
-				return p1l - p2l;
-			});
-		}
+		ArrayList<Coordinate> path = null;
+		System.out.println(from);
+		System.out.println(notSeen);
+		System.out.println(closest);
+		System.out.println(util.getTrapType(map, closest));
+		System.out.println(notSeen.size());
+		System.out.println("\n");
 		
-		for (Coordinate validRoad: allValidRoads) {
-			if (!visits.containsKey(validRoad)) {
-				visits.put(validRoad,0);
-				available_path.add(validRoad);
-			}
-		}
-		if (available_path.size()>0) {
-//			int index = randomGenerator.nextInt(available_path.size());
-			nextStep = available_path.get(0);
+
+		if (util.getTrapType(map, closest).equals("ROAD")) {
+			path = AStar.getPath(map, from, closest);
 		} else {
-			Coordinate destination =  util.getFinal(map);
-			// if this car has not visited the final
-			if(!visits.containsKey(destination)) {
-				// use A star to go to the final destination to stay away from the familiar regions
-				ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map, from, util.getFinal(map));
-				if (path.size()>1) {
-					nextStep = path.get(path.size()-2); // move to the next step given by A star
-				}
-//				System.out.println(""+from+nextStep);
-			}
-		}
-		if (nextStep==null) { // use random walk selected from previously visited mpaTiles.
-			int index = randomGenerator.nextInt(allValidRoads.size());
-			nextStep = allValidRoads.get(index);
+			notSeen.remove(closest);
+			return getPath(map, from);
 		}
 		
-		System.out.println(nextStep);
+		return path;
 		
-		current_path.add(from);
-		current_path.add(nextStep);
-//		System.out.println(current_path);
-		if (!visits.containsKey(from)) {
-			visits.put(from,1);
-		}else {
-			visits.put(from,visits.get(from)+1);
-		}
-		return current_path;
+//		// if key was just found the shortest path out of the lava is chosen
+//		if (allValidRoads.size() == 0) {
+//			ArrayList<ArrayList<Coordinate>> paths = new ArrayList<>();
+//			for (Coordinate road : getNearbyRoads(map, from)) {
+//				paths.add(AStar.getPath(map, from, road));
+//			}
+//			paths.removeAll(Collections.singleton(null));
+//			return Collections.min(paths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
+//				int p1l = 0;
+//				int p2l = 0;
+//				System.out.println(p1);
+//				for (Coordinate coord : p1) {
+//					if (util.getTrapType(map, coord).equals("lava")) {
+//						p1l += 1;
+//					}
+//				}
+//				for (Coordinate coord : p2) {
+//					if (util.getTrapType(map, coord).equals("lava")) {
+//						p2l += 1;
+//					}
+//				}
+//				return p1l - p2l;
+//			});
+//		}
+//	
+//		
+//		for (Coordinate validRoad: allValidRoads) {
+//			if (!visits.containsKey(validRoad)) {
+//				visits.put(validRoad,0);
+//				available_path.add(validRoad);
+//			}
+//		}
+//		if (available_path.size()>0) {
+////			int index = randomGenerator.nextInt(available_path.size());
+//			nextStep = available_path.get(0);
+//		} else {
+//			Coordinate destination =  util.getFinal(map);
+//			// if this car has not visited the final
+//			if(!visits.containsKey(destination)) {
+//				// use A star to go to the final destination to stay away from the familiar regions
+//				ArrayList<Coordinate> path = (ArrayList<Coordinate>) AStar.getPath(map, from, util.getFinal(map));
+//				if (path.size()>1) {
+//					nextStep = path.get(path.size()-2); // move to the next step given by A star
+//				}
+////				System.out.println(""+from+nextStep);
+//			}
+//		}
+//		if (nextStep==null) { // use random walk selected from previously visited mpaTiles.
+//			int index = randomGenerator.nextInt(allValidRoads.size());
+//			nextStep = allValidRoads.get(index);
+//		}
+//		
+//		System.out.println(nextStep);
+//		
+//		current_path.add(from);
+//		current_path.add(nextStep);
+////		System.out.println(current_path);
+//		if (!visits.containsKey(from)) {
+//			visits.put(from,1);
+//		}else {
+//			visits.put(from,visits.get(from)+1);
+//		}
+//		return current_path;
 	}
 	
 	

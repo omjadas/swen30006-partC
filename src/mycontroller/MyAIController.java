@@ -56,7 +56,7 @@ public class MyAIController extends CarController{
 					
 		
 		if (exploring) {
-			path = (ArrayList<Coordinate>) new ExploreStrategy().getPath(map, currentPosition);
+			path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 		} else if (normal) {
 			// if lava is blocking the way, and the side of the map is completed, then move to the other side of the lava no matter how fast lava is
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
