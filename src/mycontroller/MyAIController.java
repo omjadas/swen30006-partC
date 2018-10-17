@@ -62,7 +62,7 @@ public class MyAIController extends CarController{
 			// update the internal parameters in normalStrategy
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
-			
+			System.out.println(path);
 			if (path == null) {
 				// look for more keys
 				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
@@ -73,13 +73,13 @@ public class MyAIController extends CarController{
 		// we only need the nextStep from the path for the car to move to
 		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
-			currentPosition = new Coordinate(getPosition());
-			nextStep = path.get(1);
+			currentPosition = new Coordinate(getPosition());	
+			nextStep = path.get(1);// 0 is current location, 1 is the next steo
 			startMyCar();// start car engine after a brake
 			move(currentPosition, nextStep); // move the car from current location to the next location
 			updateWorldMap(getView()); // update the map again after the move
 		}else {
-			System.out.println("No possible way to go. Map may be wrong!"); // this should not happen!
+			System.out.println("No possible way to go. Map may be wrong!"); // this should only happen when win
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class MyAIController extends CarController{
 			MapTile mapTile = map.get(util.getNeighbourCoordinate(currentPosition,getOrientation()));
 			String trapType = "";
 			
-			// before speed up, check surroundings
+			// before speed up, check maptile ahead
 			if (mapTile.isType(Type.TRAP)) {
 				trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,getOrientation()));
 			}
@@ -128,7 +128,6 @@ public class MyAIController extends CarController{
 
 	// check the orientation to the next from current location
 	private Direction getNextOrientation(Coordinate current, Coordinate next) {
-		// TODO Auto-generated method stub
 		if (current.x - next.x > 0) {
 			return Direction.WEST;
 		}else if(current.x - next.x < 0) {

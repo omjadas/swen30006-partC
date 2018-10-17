@@ -14,7 +14,7 @@ public class AStar {
 	
 	// Initialize all cost for different traps
 	private static float COST_LAVA = 100.0f;
-	private static float DEFAULT = 2f;
+	private static float DEFAULT = 1f;
 	private static float COST_MUD = Float.MAX_VALUE;
 	private static float COST_GRASS = 10f;
 	
