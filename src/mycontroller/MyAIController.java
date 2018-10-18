@@ -6,6 +6,7 @@ import java.util.Random;
 
 import controller.CarController;
 import mycontroller.movestrategies.ExploreStrategy;
+import mycontroller.movestrategies.HealingStrategy;
 import mycontroller.movestrategies.NormalStrategy;
 import mycontroller.util.util;
 import tiles.LavaTrap;
@@ -39,7 +40,7 @@ public class MyAIController extends CarController{
 	public void update() {
 		boolean exploring = false; // if the current strategy is exploring
 		boolean normal = false; // if the current strategy is normal
-		ArrayList<Coordinate> path = null; // the path to be executed
+		ArrayList<Coordinate> path = new ArrayList<>(); // the path to be executed
 		currentPosition  = new Coordinate(getPosition());
 		updateWorldMap(getView()); // update the map to have the latest view
 		
@@ -71,7 +72,33 @@ public class MyAIController extends CarController{
 			}
 		}
 
-
+		if (path != null) {
+			int healthNeeded = 0;
+			for (Coordinate tile : path) {
+				if (util.getTrapType(map, tile).equals("lava")) {
+					healthNeeded += 5;
+				}
+			}
+			if (!path.get(path.size()-1).equals(util.getFinal(map))) {
+				healthNeeded *= 2;
+			}
+			if (healthNeeded > getHealth()) {
+				path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
+			}
+		}
+		
+		
+		// wait for full health
+		for (Coordinate location : util.getHealthLocations(map)) {
+			if (currentPosition.equals(location) && getHealth() < 100.0) {
+				path.clear();
+				path.add(currentPosition);
+				path.add(currentPosition);
+				break;
+			}
+		}
+		
+		
 		// we only need the nextStep from the path for the car to move to
 		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
