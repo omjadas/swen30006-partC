@@ -25,7 +25,7 @@ import world.WorldSpatial.Direction;
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
 	private ArrayList<Coordinate> notSeen = new ArrayList<>();
-	private ArrayList<Coordinate> notSeenSafe = new ArrayList<>();
+	private ArrayList<Coordinate> notSafe = new ArrayList<>();
 	Coordinate closest_old;
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
@@ -34,7 +34,6 @@ public class ExploreStrategy implements Pathable{
 		for(int x = 0 ; x < World.MAP_WIDTH; x++) {
 			for(int y = 0 ; y < World.MAP_HEIGHT ; y++) {
 				notSeen.add(new Coordinate(x,y));
-				notSeenSafe.add(new Coordinate(x,y));
 			}
 		}
 	}
@@ -49,7 +48,6 @@ public class ExploreStrategy implements Pathable{
 			for(int y = from.y -4 ; y<=from.y+4;y++) {
 				if((x>0 && y>0) && (x < World.MAP_WIDTH && y < World.MAP_HEIGHT)) {
 					notSeen.remove(new Coordinate(x,y));
-					notSeenSafe.remove(new Coordinate(x,y));
 				}
 			}
 		}
@@ -67,23 +65,9 @@ public class ExploreStrategy implements Pathable{
 		ArrayList<Coordinate> candidates;
 		boolean isAggresive;
 //		System.out.println(notSeenSafe.size());
-		if(notSeenSafe.size()==0 || util.getTrapType(map, from) == "lava") {
-			candidates = notSeen;
-			isAggresive = true;
-		}else {
-			candidates = notSeenSafe;
-			isAggresive = false;
-		}
-		System.out.println(notSeenSafe.size()+","+isAggresive);
-
-		if (!notSeen.contains(closest_old)) {
-
-			closest = Collections.min(candidates, (Coordinate c1, Coordinate c2) -> {
-
-			
-//				if ((Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) == (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y))) {
-//					return numLava(map, AStar.getPath(map, from, c1)) - numLava(map, AStar.getPath(map, from, c2));
-//				}
+		
+		if (!notSeen.contains(closest_old)) {			
+			closest = Collections.min(notSeen, (Coordinate c2, Coordinate c1) -> {
 				return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
 			});
 			closest_old = closest;
@@ -106,27 +90,22 @@ public class ExploreStrategy implements Pathable{
 			path = AStar.getPath(map, from, closest);
 			if (path==null) {
 				notSeen.remove(closest);
-				notSeenSafe.remove(closest);
 				path = getPath(map, from);
 			}else {
 				Collections.reverse(path);
+//				for (Coordinate step:path) {
+//					if (util.getTrapType(map, step) == "lava") {
+//						notSafe.add(closest);
+//						path = getPath(map, from);
+//						break;
+//					}
+//				}
 			}
 		} else {
 			notSeen.remove(closest);
-			notSeenSafe.remove(closest);
 			path = getPath(map, from);
 		}
-		
-		if(!isAggresive) {
-			for (Coordinate step:path) {
-				if (util.getTrapType(map, step) == "lava") {
-					notSeenSafe.remove(closest);
-					closest_old = null;
-					break;
-				}
-			}
-		}
-		
+
 		
 //		System.out.println(path);
 		return path;
