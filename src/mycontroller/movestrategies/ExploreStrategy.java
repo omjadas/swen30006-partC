@@ -25,7 +25,8 @@ import world.WorldSpatial.Direction;
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
 	private ArrayList<Coordinate> notSeen = new ArrayList<>();
-	Coordinate closest_old;
+	private int seenCounts = 0;
+	private Coordinate closest_old;
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
@@ -53,12 +54,12 @@ public class ExploreStrategy implements Pathable{
 		
 //		updateExplored(view);
 //		updateMap(view);
-		ArrayList<Coordinate> allValidRoads = getRoadsInView(map, from);
-//		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
-		ArrayList<Coordinate> current_path = new ArrayList<>();
-		ArrayList<Coordinate> available_path = new ArrayList<>();
-		Coordinate nextStep = null;
-		Random randomGenerator = new Random();
+//		ArrayList<Coordinate> allValidRoads = getRoadsInView(map, from);
+////		HashMap<Coordinate,ArrayList<Coordinate>> validRoads = new HashMap<Coordinate,ArrayList<Coordinate>>();
+//		ArrayList<Coordinate> current_path = new ArrayList<>();
+//		ArrayList<Coordinate> available_path = new ArrayList<>();
+//		Coordinate nextStep = null;
+//		Random randomGenerator = new Random();
 //		System.out.println(from);
 		Coordinate closest;
 		if (!notSeen.contains(closest_old)) {
@@ -79,7 +80,9 @@ public class ExploreStrategy implements Pathable{
 //		System.out.println("\n");
 		
 		
-		if (map.get(closest).isType(Type.ROAD)) {
+		
+		
+		if (getExploreCondition(map,closest)) {
 			path = AStar.getPath(map, from, closest);
 			if (path==null) {
 				notSeen.remove(closest);
@@ -161,64 +164,82 @@ public class ExploreStrategy implements Pathable{
 //		return current_path;
 	}
 	
-	
-	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
-		Direction direction = util.getMyDirection(current,grass);
-		Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
-		Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
-		if(view.containsKey(grass_two_next)) {
-			if (view.get(grass_one_next).isType(Type.ROAD)){
-				return true;
-			}else if(view.get(grass_one_next).isType(Type.TRAP)) {
-	    		if (util.getTrapType(view, grass_one_next).equals("grass")){
-	    			return isSafeGrass( view, grass_one_next, grass_two_next);
-	    		}
-	    	}
+	private boolean getExploreCondition(HashMap<Coordinate, MapTile> map, Coordinate closest) {
+		// normal
+		if (map.get(closest).isType(Type.ROAD)) {
+			return true;
 		}
-		return false;
-	}
-	
-	
-	private static ArrayList<Coordinate> getNearbyRoads(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
-		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
-	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
-	        MapTile mapTile = (MapTile) pair.getValue();
-	        Coordinate viewLocation = (Coordinate) pair.getKey();
-	        if (util.getNearby(view, currentPosition, 4).containsKey(viewLocation)) {
-	        	if (mapTile.isType(Type.ROAD)) {
-	        		roads.add((Coordinate) pair.getKey());
-	        	}else if(mapTile.isType(Type.TRAP)) {
-	        		if (util.getTrapType(view, viewLocation).equals("grass")){
-	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
-		        			roads.add(viewLocation);
-	        			}
-	        		}
-	        	}
-	        }
-	    }
-		return roads;
-	}
-	
-	private static ArrayList<Coordinate> getRoadsInView(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
 		
-		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
-	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
-	        MapTile mapTile = (MapTile) pair.getValue();
-	        Coordinate viewLocation = (Coordinate) pair.getKey();
-	        if (util.getAllNeighbours(view, currentPosition).containsKey(viewLocation)) {
-	        	if (mapTile.isType(Type.ROAD)) {
-	        		roads.add((Coordinate) pair.getKey());
-	        	}else if(mapTile.isType(Type.TRAP)) {
-	        		if (util.getTrapType(view, viewLocation).equals("grass")){
-	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
-		        			roads.add(viewLocation);
-	        			}
-	        		}else if (util.getTrapType(view, viewLocation).equals("health")){
-		        		roads.add(viewLocation);
-	        		}
-	        	}
-	        }
-	    }
-		return roads;
+		// progressive
+		if(map.get(closest).isType(Type.TRAP)) {
+			String trapType = util.getTrapType(map, closest);
+			if(trapType != "mud") {
+				return true;
+			}
+		}
+		
+		return false;
+		
 	}
+	
+//	
+//	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
+//		Direction direction = util.getMyDirection(current,grass);
+//		Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
+//		Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
+//		if(view.containsKey(grass_two_next)) {
+//			if (view.get(grass_one_next).isType(Type.ROAD)){
+//				return true;
+//			}else if(view.get(grass_one_next).isType(Type.TRAP)) {
+//	    		if (util.getTrapType(view, grass_one_next).equals("grass")){
+//	    			return isSafeGrass( view, grass_one_next, grass_two_next);
+//	    		}
+//	    	}
+//		}
+//		return false;
+//	}
+//	
+//	
+//	private static ArrayList<Coordinate> getNearbyRoads(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
+//		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
+//	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
+//	        MapTile mapTile = (MapTile) pair.getValue();
+//	        Coordinate viewLocation = (Coordinate) pair.getKey();
+//	        if (util.getNearby(view, currentPosition, 4).containsKey(viewLocation)) {
+//	        	if (mapTile.isType(Type.ROAD)) {
+//	        		roads.add((Coordinate) pair.getKey());
+//	        	}else if(mapTile.isType(Type.TRAP)) {
+//	        		if (util.getTrapType(view, viewLocation).equals("grass")){
+//	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
+//		        			roads.add(viewLocation);
+//	        			}
+//	        		}
+//	        	}
+//	        }
+//	    }
+//		return roads;
+//	}
+//	
+//	private static ArrayList<Coordinate> getRoadsInView(HashMap<Coordinate, MapTile> view, Coordinate currentPosition) {
+//		
+//		ArrayList<Coordinate> roads = new ArrayList<Coordinate>();
+//	    for (Entry<Coordinate,MapTile> pair : view.entrySet()) {
+//	        MapTile mapTile = (MapTile) pair.getValue();
+//	        Coordinate viewLocation = (Coordinate) pair.getKey();
+//	        if (util.getAllNeighbours(view, currentPosition).containsKey(viewLocation)) {
+//	        	if (mapTile.isType(Type.ROAD)) {
+//	        		roads.add((Coordinate) pair.getKey());
+//	        	}else if(mapTile.isType(Type.TRAP)) {
+//	        		if (util.getTrapType(view, viewLocation).equals("grass")){
+//	        			if (isSafeGrass( view, currentPosition, viewLocation)) {
+//		        			roads.add(viewLocation);
+//	        			}
+//	        		}else if (util.getTrapType(view, viewLocation).equals("health")){
+//		        		roads.add(viewLocation);
+//	        		}
+//	        	}
+//	        }
+//	    }
+//		return roads;
+//	}
 }
