@@ -85,6 +85,7 @@ public class MyAIController extends CarController{
 				healthNeeded *= 2;
 			}
 			if (healthNeeded > getHealth()) {
+				System.out.println("getting health");
 				path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
 			}
 		}
