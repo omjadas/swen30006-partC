@@ -170,14 +170,6 @@ public class ExploreStrategy implements Pathable{
 			return true;
 		}
 		
-		// progressive
-		if(map.get(closest).isType(Type.TRAP)) {
-			String trapType = util.getTrapType(map, closest);
-			if(trapType != "mud") {
-				return true;
-			}
-		}
-		
 		return false;
 		
 	}
