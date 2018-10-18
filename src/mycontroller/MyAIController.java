@@ -65,13 +65,14 @@ public class MyAIController extends CarController{
 			// update the internal parameters in normalStrategy
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
-			System.out.println(path);
-			System.out.println(util.getTrapType(map, currentPosition));
 			if (path == null) {
 				// look for more keys
 				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 			}
 		}
+		
+		System.out.println(path);
+		System.out.println(util.getTrapType(map, currentPosition));
 
 		if (path != null) {
 			int healthNeeded = 0;
