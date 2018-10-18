@@ -78,12 +78,12 @@ public class MyAIController extends CarController{
 			currentPosition = new Coordinate(getPosition());	
 			nextStep = path.get(1);// 0 is current location, 1 is the next steo
 			startMyCar();// start car engine after a brake
-			if (getSpeed()<1) {
+			if (getSpeed()<1 && !nextStep.equals(currentPosition)) {
 				badEngineCount++;
 				System.out.println(badEngineCount);
 			}
-			if (badEngineCount>30) {
-				System.exit(0);
+			if (badEngineCount>40) { // if the car brakes 50 times in this game
+				System.exit(0); // quit the game
 			}
 			move(currentPosition, nextStep); // move the car from current location to the next location
 			updateWorldMap(getView()); // update the map again after the move
