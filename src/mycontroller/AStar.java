@@ -9,6 +9,7 @@ import tiles.MapTile;
 import tiles.MapTile.Type;
 import tiles.TrapTile;
 import utilities.Coordinate;
+import world.WorldSpatial.Direction;
 
 public class AStar {
 	
@@ -97,7 +98,13 @@ public class AStar {
 				}
 
 				// update the f-score for the neighbours
-	            fScore.put(neighbour, gScore.get(neighbour) + getCost(view,neighbour)*util.getDistanceManh(neighbour, to)); // getCost(view,neighbour)+
+				float neighbourCost = getCost(view,neighbour);
+				if(util.getTrapType(view, neighbour)=="grass") {
+					if(!isSafeGrass(view, currentPosition, neighbour)) {
+						neighbourCost = COST_MUD;
+					}
+				}
+				fScore.put(neighbour, gScore.get(neighbour) + neighbourCost*util.getDistanceManh(neighbour, to)); // getCost(view,neighbour)+
         	}
         }
 		
@@ -165,6 +172,21 @@ public class AStar {
 		COST_GRASS = grass;
 	}
 	
+	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
+	Direction direction = util.getMyDirection(current,grass);
+	Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
+	Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
+	if(view.containsKey(grass_two_next)) {
+		if (view.get(grass_one_next).isType(Type.ROAD)){
+			return true;
+		}else if(view.get(grass_one_next).isType(Type.TRAP)) {
+    		if (util.getTrapType(view, grass_one_next).equals("grass")){
+    			return isSafeGrass( view, grass_one_next, grass_two_next);
+    		}
+    	}
+	}
+	return false;
+}
 
 
 }

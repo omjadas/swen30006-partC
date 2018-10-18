@@ -108,7 +108,6 @@ public class MyAIController extends CarController{
 			if (getSpeed()<1 && !nextStep.equals(currentPosition)) {
 				badEngineCount++;
 				System.out.println(badEngineCount);
-				System.out.println(util.getTrapType(map, currentPosition));
 			}
 			if (badEngineCount>40) { // if the car brakes 50 times in this game
 				System.exit(0); // quit the game
