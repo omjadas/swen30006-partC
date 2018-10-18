@@ -75,20 +75,10 @@ public class MyAIController extends CarController{
 		System.out.println(util.getTrapType(map, currentPosition));
 
 		if (path != null) {
-			int healthNeeded = 0;
-			for (Coordinate tile : path) {
-				if (util.getTrapType(map, tile).equals("lava")) {
-					healthNeeded += 5;
-				}
-			}
-			if (!path.get(path.size()-1).equals(util.getFinal(map))) {
-				healthNeeded *= 2;
-			}
-			if (healthNeeded > getHealth()) {
-				System.out.println("getting health");
-				path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
-			}
+			path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
 		}
+		
+
 		
 		
 		// wait for full health
