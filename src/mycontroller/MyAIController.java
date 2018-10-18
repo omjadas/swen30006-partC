@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import controller.CarController;
 import mycontroller.movestrategies.ExploreStrategy;
@@ -91,23 +92,31 @@ public class MyAIController extends CarController{
 	private void startMyCar() {
 		// to determine if the car is stuck when it first starts
 		if(initiate) { 
-			MapTile mapTile = map.get(util.getNeighbourCoordinate(currentPosition,getOrientation()));
-			String trapType = "";
+			MapTile front_mapTile = map.get(util.getNeighbourCoordinate(currentPosition,getOrientation()));
+			MapTile back_mapTile = map.get(util.getNeighbourCoordinate(currentPosition,util.reverseOrientation(getOrientation())));
+			String front_trapType = "";
+			String back_trapType = "";
 			
 			// before speed up, check maptile ahead
-			if (mapTile.isType(Type.TRAP)) {
-				trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,getOrientation()));
+			if (front_mapTile.isType(Type.TRAP)) {
+				front_trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,getOrientation()));
+			}
+			if (back_mapTile.isType(Type.TRAP)) {
+				back_trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,util.reverseOrientation(getOrientation())));
 			}
 			// if the front of the car is not wall or mud
-			if (!mapTile.isType(Type.WALL) && !trapType.equals("mud")) {
+			if (front_mapTile.isType(Type.WALL) || front_trapType.equals("mud")) {
+				applyReverseAcceleration();// apply backward speed
+			}else if(back_mapTile.isType(Type.WALL) || back_trapType.equals("mud")){
 				applyForwardAcceleration();// apply forward speed 
 			}else {
-				applyReverseAcceleration();// apply backward speed
+				if(Math.random() < 0.5) {
+					applyForwardAcceleration();// apply forward speed 
+				}else {
+					applyReverseAcceleration();// apply backward speed
+				}
 			}
-			if(getSpeed()==0.0) {
-				System.out.println("stuck!!!");
-				System.exit(0);
-			}
+			
 			initiate = false;// now the car is initialised
 		}else {
 			// the car is initialised, but stops for key or health

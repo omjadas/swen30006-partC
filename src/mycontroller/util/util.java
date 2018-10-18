@@ -23,6 +23,17 @@ public class util {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
 	
+	public static Direction reverseOrientation(Direction orientation) {
+		if (orientation.equals(Direction.EAST))
+			return Direction.WEST;
+		else if (orientation.equals(Direction.WEST))
+			return Direction.EAST;
+		else if (orientation.equals(Direction.NORTH))
+			return Direction.SOUTH;
+		else
+			return Direction.NORTH;
+	}
+	
 	public static String getTrapType(HashMap<Coordinate, MapTile> map, Coordinate coordinate) {
 		MapTile mapTile = map.get(coordinate);
 //		System.out.println(mapTile.getType().toString());
