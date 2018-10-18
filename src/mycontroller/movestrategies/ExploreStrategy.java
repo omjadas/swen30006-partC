@@ -169,7 +169,7 @@ public class ExploreStrategy implements Pathable{
 	
 	private int numLava(HashMap<Coordinate, MapTile> map, ArrayList<Coordinate> path) {
 		if (path == null) {
-			return 1;
+			return 1000;
 		}
 		int lava = 0;
 		for (Coordinate coord : path) {
