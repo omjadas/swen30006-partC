@@ -78,6 +78,13 @@ public class MyAIController extends CarController{
 			currentPosition = new Coordinate(getPosition());	
 			nextStep = path.get(1);// 0 is current location, 1 is the next steo
 			startMyCar();// start car engine after a brake
+			if (getSpeed()<1) {
+				badEngineCount++;
+				System.out.println(badEngineCount);
+			}
+			if (badEngineCount>30) {
+				System.exit(0);
+			}
 			move(currentPosition, nextStep); // move the car from current location to the next location
 			updateWorldMap(getView()); // update the map again after the move
 		}else {
@@ -116,12 +123,6 @@ public class MyAIController extends CarController{
 				}else {
 					applyReverseAcceleration();// apply backward speed
 				}
-			}
-			if (getSpeed()<1) {
-				badEngineCount++;
-			}
-			if (badEngineCount>50) {
-				System.exit(0);
 			}
 			initiate = false;// now the car is initialised
 		}else {
