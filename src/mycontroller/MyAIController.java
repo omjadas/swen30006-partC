@@ -139,7 +139,7 @@ public class MyAIController extends CarController{
 				}else {
 					applyReverseAcceleration();// apply backward speed
 				}
-			}
+			} 
 			initiate = false;// now the car is initialised
 		}else {
 			// the car is initialised, but stops for health
