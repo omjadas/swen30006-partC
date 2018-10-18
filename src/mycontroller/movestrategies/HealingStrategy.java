@@ -46,7 +46,7 @@ public class HealingStrategy implements Pathable {
 			path = Collections.min(healthPaths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
 				return healthNeeded(map, p1) - healthNeeded(map, p2);
 			});
-			if (100 - healthNeeded(map, path) > (int) health && (int) health > healthNeeded(map, path)) {
+			if ((100 - healthNeeded(map, path)) > (int) health && (int) health > healthNeeded(map, path)) {
 //				System.out.println(100 - (healthNeeded(map, path) * 2));
 				System.out.println("getting health");
 				Collections.reverse(path);
