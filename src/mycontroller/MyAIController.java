@@ -26,6 +26,7 @@ public class MyAIController extends CarController{
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
 	private NormalStrategy normalStrategy;
 	private ExploreStrategy exploreStrategy;
+	private int badEngineCount = 0;
 	
 	public MyAIController(Car car) {
 		super(car);
@@ -116,7 +117,12 @@ public class MyAIController extends CarController{
 					applyReverseAcceleration();// apply backward speed
 				}
 			}
-			
+			if (getSpeed()<1) {
+				badEngineCount++;
+			}
+			if (badEngineCount>50) {
+				System.exit(0);
+			}
 			initiate = false;// now the car is initialised
 		}else {
 			// the car is initialised, but stops for key or health
