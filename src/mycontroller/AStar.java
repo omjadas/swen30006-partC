@@ -98,13 +98,13 @@ public class AStar {
 				}
 
 				// update the f-score for the neighbours
-				float neighbourCost = getCost(view,neighbour);
-				if(util.getTrapType(view, neighbour)=="grass") {
+				float neighbourCost = getCost(view,neighbour); // get the cost to choose this path
+				if(util.getTrapType(view, neighbour)=="grass") { // check if the grass is safe to pass
 					if(!isSafeGrass(view, currentPosition, neighbour)) {
-						neighbourCost = COST_MUD;
+						neighbourCost = COST_MUD; // if the end of grass is wall or mud, punish this path
 					}
 				}
-				fScore.put(neighbour, gScore.get(neighbour) + neighbourCost*util.getDistanceManh(neighbour, to)); // getCost(view,neighbour)+
+				fScore.put(neighbour, gScore.get(neighbour) + neighbourCost*util.getDistanceManh(neighbour, to)); // update my fscore
         	}
         }
 		
