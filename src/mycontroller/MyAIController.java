@@ -71,9 +71,9 @@ public class MyAIController extends CarController{
 			}
 		}
 		
-		System.out.println(path);
-		System.out.println(getHealth());
-		System.out.println(util.getTrapType(map, currentPosition));
+//		System.out.println(path);
+//		System.out.println(getHealth());
+//		System.out.println(util.getTrapType(map, currentPosition));
 
 		if (path != null) {
 			path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);

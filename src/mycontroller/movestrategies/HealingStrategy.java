@@ -48,7 +48,7 @@ public class HealingStrategy implements Pathable {
 			});
 			if ((100 - healthNeeded(map, path)) > (int) health && (int) health > healthNeeded(map, path)) {
 //				System.out.println(100 - (healthNeeded(map, path) * 2));
-				System.out.println("getting health");
+//				System.out.println("getting health");
 				Collections.reverse(path);
 				return path;
 			}
