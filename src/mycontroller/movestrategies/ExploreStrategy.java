@@ -66,7 +66,7 @@ public class ExploreStrategy implements Pathable{
 		Coordinate closest;
 		ArrayList<Coordinate> candidates;
 		boolean isAggresive;
-		System.out.println(notSeenSafe.size());
+//		System.out.println(notSeenSafe.size());
 		if(notSeenSafe.size()==0 || util.getTrapType(map, from) == "lava") {
 			candidates = notSeen;
 			isAggresive = true;
@@ -74,13 +74,20 @@ public class ExploreStrategy implements Pathable{
 			candidates = notSeenSafe;
 			isAggresive = false;
 		}
+		System.out.println(notSeenSafe.size()+","+isAggresive);
 
 		if (!notSeen.contains(closest_old)) {
+
 			closest = Collections.min(candidates, (Coordinate c1, Coordinate c2) -> {
+
+			
+//				if ((Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) == (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y))) {
+//					return numLava(map, AStar.getPath(map, from, c1)) - numLava(map, AStar.getPath(map, from, c2));
+//				}
 				return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
 			});
 			closest_old = closest;
-		}else {
+		} else {
 			closest = closest_old;
 		}
 		
@@ -187,6 +194,19 @@ public class ExploreStrategy implements Pathable{
 //			visits.put(from,visits.get(from)+1);
 //		}
 //		return current_path;
+	}
+	
+	private int numLava(HashMap<Coordinate, MapTile> map, ArrayList<Coordinate> path) {
+		if (path == null) {
+			return 1000;
+		}
+		int lava = 0;
+		for (Coordinate coord : path) {
+			if (util.getTrapType(map, coord).equals("lava")) {
+				lava +=1;
+			}
+		}
+		return lava;
 	}
 	
 //	

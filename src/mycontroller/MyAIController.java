@@ -71,9 +71,11 @@ public class MyAIController extends CarController{
 			}
 		}
 		
+
 //		System.out.println(path);
 //		System.out.println(getHealth());
 //		System.out.println(util.getTrapType(map, currentPosition));
+
 
 		if (path != null) {
 			path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
@@ -101,7 +103,6 @@ public class MyAIController extends CarController{
 			startMyCar();// start car engine after a brake
 			if (getSpeed()<1 && !nextStep.equals(currentPosition)) {
 				badEngineCount++;
-				System.out.println(badEngineCount);
 			}
 			if (badEngineCount>40) { // if the car brakes 50 times in this game
 				System.exit(0); // quit the game
@@ -109,7 +110,6 @@ public class MyAIController extends CarController{
 			move(currentPosition, nextStep); // move the car from current location to the next location
 			updateWorldMap(getView()); // update the map again after the move
 		}else {
-			System.out.println("No possible way to go. Map may be wrong!"); // this should only happen when win
 		}
 	}
 	
