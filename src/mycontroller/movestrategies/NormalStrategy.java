@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import mycontroller.AStar;
 import mycontroller.util.util;
 import tiles.MapTile;
+import tiles.MapTile.Type;
 import utilities.Coordinate;
 
 public class NormalStrategy implements Pathable {
@@ -52,7 +53,7 @@ public class NormalStrategy implements Pathable {
 				HashMap<Coordinate, String> allNeighbours = util.getAllNeighbours(map,from);
 				for (Entry<Coordinate, String> neighbour:  allNeighbours.entrySet()) {
 					// if the neighbour is also a health
-					if(neighbour.getValue()=="health") {
+					if(neighbour.getValue()=="health" || map.get(neighbour).isType(Type.ROAD)) {
 						path.add(neighbour.getKey()); // add neighbour as the next step
 						break;
 					}
