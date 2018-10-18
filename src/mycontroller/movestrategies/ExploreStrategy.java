@@ -25,8 +25,7 @@ import world.WorldSpatial.Direction;
 public class ExploreStrategy implements Pathable{
 //	static ArrayList<Coordinate> seens = new ArrayList<Coordinate>();
 	private ArrayList<Coordinate> notSeen = new ArrayList<>();
-	private int seenCounts = 0;
-	private Coordinate closest_old;
+	Coordinate closest_old;
 	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 //	static HashMap<Coordinate, MapTile> incompleteMap = new HashMap<Coordinate, MapTile>();
 
@@ -82,7 +81,7 @@ public class ExploreStrategy implements Pathable{
 		
 		
 		
-		if (getExploreCondition(map,closest)) {
+		if (map.get(closest).isType(Type.ROAD)) {
 			path = AStar.getPath(map, from, closest);
 			if (path==null) {
 				notSeen.remove(closest);
@@ -162,16 +161,6 @@ public class ExploreStrategy implements Pathable{
 //			visits.put(from,visits.get(from)+1);
 //		}
 //		return current_path;
-	}
-	
-	private boolean getExploreCondition(HashMap<Coordinate, MapTile> map, Coordinate closest) {
-		// normal
-		if (map.get(closest).isType(Type.ROAD)) {
-			return true;
-		}
-		
-		return false;
-		
 	}
 	
 //	

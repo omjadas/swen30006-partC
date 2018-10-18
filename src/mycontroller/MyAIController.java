@@ -104,6 +104,10 @@ public class MyAIController extends CarController{
 			}else {
 				applyReverseAcceleration();// apply backward speed
 			}
+			if(getSpeed()==0.0) {
+				System.out.println("stuck!!!");
+				System.exit(0);
+			}
 			initiate = false;// now the car is initialised
 		}else {
 			// the car is initialised, but stops for key or health
