@@ -13,29 +13,15 @@ import utilities.Coordinate;
 public class HealingStrategy implements Pathable {
 
 	private float health;
-	private ArrayList<Coordinate> current;
+	private ArrayList<Coordinate> current_path;
 	
-	public HealingStrategy(float health, ArrayList<Coordinate> current) {
+	public void update(float health, ArrayList<Coordinate> current) {
 		this.health = health;
-		this.current = current;
+		this.current_path = current;
 	}
 	
 	@Override
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate from) {
-//		int healthNeeded = 0;
-//		for (Coordinate tile : current) {
-//			if (util.getTrapType(map, tile).equals("lava")) {
-//				healthNeeded += 5;
-//			}
-//		}
-//		if (!current.get(current.size()-1).equals(util.getFinal(map))) {
-//			healthNeeded *= 2;
-//		}
-//		if (healthNeeded > health) {
-//			System.out.println("getting health");
-//			return getHealth(map, from);
-//		}
-//		return current;
 		
 		ArrayList<Coordinate> path = new ArrayList<>();
 		ArrayList<ArrayList<Coordinate>> healthPaths = new ArrayList<>();
@@ -47,15 +33,11 @@ public class HealingStrategy implements Pathable {
 				return healthNeeded(map, p1) - healthNeeded(map, p2);
 			});
 			if ((100 - healthNeeded(map, path)) > (int) health && (int) health > healthNeeded(map, path)) {
-
-//				System.out.println(100 - (healthNeeded(map, path) * 2));
-//				System.out.println("getting health");
-
 				Collections.reverse(path);
 				return path;
 			}
 		}
-		return current;
+		return current_path;
 	}
 	
 	private int healthNeeded(HashMap<Coordinate, MapTile> map, ArrayList<Coordinate> path) {
@@ -73,7 +55,7 @@ public class HealingStrategy implements Pathable {
 		ArrayList<Coordinate> path = null;
 		
 		if (locations.size() == 0) {
-			return current;
+			return current_path;
 		}
 		
 		for (Coordinate location : locations) {

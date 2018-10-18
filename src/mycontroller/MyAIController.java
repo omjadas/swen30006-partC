@@ -27,13 +27,16 @@ public class MyAIController extends CarController{
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
 	private NormalStrategy normalStrategy;
 	private ExploreStrategy exploreStrategy;
-	private int badEngineCount = 0;
+	private HealingStrategy healingStrategy;
+	private int badEngineCount = 0; // quite the game if staying at one place too long. Should never be used.
 	
 	public MyAIController(Car car) {
 		super(car);
+		
 		// define different strategies
 		normalStrategy = new NormalStrategy(numKeys());
 		exploreStrategy = new ExploreStrategy();
+		healingStrategy = new HealingStrategy();
 	}
 
 	@Override
@@ -61,30 +64,23 @@ public class MyAIController extends CarController{
 			// get path from explore strategy
 			path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 		} else if (normal) {
-			// if lava is blocking the way, and the side of the map is completed, then move to the other side of the lava no matter how fast lava is
 			// update the internal parameters in normalStrategy
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
+			// get path from normal strategy to retrieve keys
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
-			if (path == null) {
+			if (path == null) { // switch back to explore strategy
 				// look for more keys
 				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 			}
 		}
-		
 
-//		System.out.println(path);
-//		System.out.println(getHealth());
-//		System.out.println(util.getTrapType(map, currentPosition));
-
-
+		// implement healing strategy
 		if (path != null) {
-			path = (ArrayList<Coordinate>) new HealingStrategy(getHealth(), path).getPath(map, currentPosition);
+			healingStrategy.update(getHealth(), path);
+			path = (ArrayList<Coordinate>) healingStrategy.getPath(map, currentPosition);
 		}
 		
-
-		
-		
-		// wait for full health
+		// wait for full health standing on a health
 		for (Coordinate location : util.getHealthLocations(map)) {
 			if (currentPosition.equals(location) && getHealth() < 100.0) {
 				path.clear();
@@ -94,12 +90,11 @@ public class MyAIController extends CarController{
 			}
 		}
 		
-		
 		// we only need the nextStep from the path for the car to move to
 		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());	
-			nextStep = path.get(1);// 0 is current location, 1 is the next steo
+			nextStep = path.get(1);// 0 is current location, 1 is the next step
 			startMyCar();// start car engine after a brake
 			if (getSpeed()<1 && !nextStep.equals(currentPosition)) {
 				badEngineCount++;
@@ -108,12 +103,12 @@ public class MyAIController extends CarController{
 				System.exit(0); // quit the game
 			}
 			move(currentPosition, nextStep); // move the car from current location to the next location
+			System.out.println(currentPosition+","+nextStep+","+getHealth());
 			updateWorldMap(getView()); // update the map again after the move
-		}else {
 		}
 	}
 	
-	
+	// update the map with view
 	private void updateWorldMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
@@ -147,8 +142,13 @@ public class MyAIController extends CarController{
 			}
 			initiate = false;// now the car is initialised
 		}else {
-			// the car is initialised, but stops for key or health
+			// the car is initialised, but stops for health
 			if (getHealth() == 100 && map.get(currentPosition).isType(Type.TRAP)) {
+				// start engine again if completed the job at that location
+				initiate = true;	
+			}
+			// the car is initialised, but stops for keys
+			if (getSpeed() == 0 && util.getTrapType(map, currentPosition).equals("lava")) {
 				// start engine again if completed the job at that location
 				initiate = true;	
 			}
