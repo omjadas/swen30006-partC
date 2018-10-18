@@ -61,6 +61,7 @@ public class ExploreStrategy implements Pathable{
 //		Random randomGenerator = new Random();
 //		System.out.println(from);
 		Coordinate closest;
+		System.out.println(notSeen);
 		if (!notSeen.contains(closest_old)) {
 			closest = Collections.min(notSeen, (Coordinate c1, Coordinate c2) -> {
 				if ((Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) == (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y))) {
@@ -167,6 +168,9 @@ public class ExploreStrategy implements Pathable{
 	}
 	
 	private int numLava(HashMap<Coordinate, MapTile> map, ArrayList<Coordinate> path) {
+		if (path == null) {
+			return 1;
+		}
 		int lava = 0;
 		for (Coordinate coord : path) {
 			if (util.getTrapType(map, coord).equals("lava")) {
