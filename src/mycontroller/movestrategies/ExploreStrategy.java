@@ -61,14 +61,14 @@ public class ExploreStrategy implements Pathable{
 //		Random randomGenerator = new Random();
 //		System.out.println(from);
 		Coordinate closest;
-//		if (!notSeen.contains(closest_old)) {
+		if (!notSeen.contains(closest_old)) {
 			closest = Collections.min(notSeen, (Coordinate c1, Coordinate c2) -> {
 				return (Math.abs(from.x - c1.x) + Math.abs(from.y - c1.y)) - (Math.abs(from.x - c2.x) + Math.abs(from.y - c2.y));
 			});
-//			closest_old = closest;
-//		}else {
-//			closest = closest_old;
-//		}
+			closest_old = closest;
+		}else {
+			closest = closest_old;
+		}
 		
 		List<Coordinate> path = null;
 //		System.out.println(from);
