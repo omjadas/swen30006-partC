@@ -15,7 +15,7 @@ public class AIController extends CarController {
 	private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
 	
 	// Car Speed to move at
-	private final int CAR_MAX_SPEED = 1;
+	private final int CAR_MAX_SPEED = 3;
 	
 	public AIController(Car car) {
 		super(car);
@@ -31,6 +31,7 @@ public class AIController extends CarController {
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
 			applyForwardAcceleration();   // Tough luck if there's a wall in the way
+			System.out.println(getSpeed());
 		}
 		if (isFollowingWall) {
 			// If wall no longer on left, turn left

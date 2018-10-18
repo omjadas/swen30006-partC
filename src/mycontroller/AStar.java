@@ -17,7 +17,7 @@ public class AStar {
 	private static float COST_LAVA = 100.0f;
 	private static float DEFAULT = 1f;
 	private static float COST_MUD = Float.MAX_VALUE;
-	private static float COST_GRASS = 10f;
+	private static float COST_GRASS = 3f;
 	
 			
 	
