@@ -177,15 +177,18 @@ public class AStar {
 	Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
 	Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
 	if(view.containsKey(grass_two_next)) {
-		if (view.get(grass_one_next).isType(Type.ROAD)){
-			return true;
+		if (view.get(grass_one_next).isType(Type.WALL)){
+			return false;
 		}else if(view.get(grass_one_next).isType(Type.TRAP)) {
+			if(util.getTrapType(view, grass_one_next).equals("mud")) {
+				return false;
+			}
     		if (util.getTrapType(view, grass_one_next).equals("grass")){
     			return isSafeGrass( view, grass_one_next, grass_two_next);
     		}
     	}
 	}
-	return false;
+	return true;
 }
 
 
