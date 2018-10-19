@@ -1,5 +1,7 @@
 package mycontroller;
 
+// Group 40
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -40,7 +42,6 @@ public class AStar {
 		HashMap<Coordinate, Float> fScore = new HashMap<>();
         
         // give initial values to the parameters
-        // exploredNodes.add(from); this should not be here <--------------delete
 		gScore.put(from, 0.0f);
 		fScore.put(from, getCost(view, from) * util.getDistanceManh(from, to));
         tentative_gScore = (float) 0.0;
@@ -94,6 +95,7 @@ public class AStar {
 					// Ignore the neighbor which is mud or wall.
 					gScore.put(neighbour, COST_MUD);
 				} else {
+					// record the gScore of the neighbour so far
 					gScore.put(neighbour, tentative_gScore);
 				}
 
@@ -162,33 +164,32 @@ public class AStar {
 		}
 			
 	}
-	
-//	private static void updateMap(HashMap<Coordinate, MapTile> map) {
-//		AStar.map = map;
-//	}
-	
-	public void update(float lava, float health, float grass) {
+
+	// for future updates. Not used in this project.
+	public void update(float lava, float grass) {
 		COST_LAVA = lava;
 		COST_GRASS = grass;
 	}
 	
+	// to check if it is safe to step onto the grass
 	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
-	Direction direction = util.getMyDirection(current,grass);
-	Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction);
-	Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);
-	if(view.containsKey(grass_two_next)) {
-		if (view.get(grass_one_next).isType(Type.WALL)){
-			return false;
-		}else if(view.get(grass_one_next).isType(Type.TRAP)) {
-			if(util.getTrapType(view, grass_one_next).equals("mud")) {
-				return false;
+	Direction direction = util.getMyDirection(current,grass); // check the orientation when the car step on the grass
+	Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction); // check the neighbour of the grass
+	Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);// check the neighbour of the neighbour of the grass
+	
+	if(view.containsKey(grass_two_next)) { // if the car can see the the neighbour of the neighbour of the grass
+		if (view.get(grass_one_next).isType(Type.WALL)){ // if the end of the grass is a wall
+			return false; // it is not safe
+		}else if(view.get(grass_one_next).isType(Type.TRAP)) { 
+			if(util.getTrapType(view, grass_one_next).equals("mud")) { // if the end of the grass is a mud
+				return false; // this is not safe either
 			}
-    		if (util.getTrapType(view, grass_one_next).equals("grass")){
-    			return isSafeGrass( view, grass_one_next, grass_two_next);
+    		if (util.getTrapType(view, grass_one_next).equals("grass")){ // if the end of the grass is a grass
+    			return isSafeGrass( view, grass_one_next, grass_two_next); // look further
     		}
     	}
 	}
-	return true;
+	return true; // if nothing dangerous has been found, then it is safe. Or, the car can't see the end of the grass
 }
 
 

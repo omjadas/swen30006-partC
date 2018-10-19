@@ -1,5 +1,7 @@
 package mycontroller.movestrategies;
 
+//Group 40
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public class HealingStrategy implements Pathable {
 	// update healing strategy parameters
 	public void update(float health, ArrayList<Coordinate> current) {
 		this.health = health;
-		this.current_path = current; // we want to keep the current path option so we can compare
+		this.current_path = current; // we want to keep the current path option so we can compare later
 	}
 	
 	@Override
@@ -52,7 +54,7 @@ public class HealingStrategy implements Pathable {
 		int healthNeeded = 0;
 		for (Coordinate tile : path) {
 			if (util.getTrapType(map, tile).equals("lava")) {
-				healthNeeded += 5;
+				healthNeeded += 5; // the cost to step on lava 
 			}
 		}
 		return healthNeeded;

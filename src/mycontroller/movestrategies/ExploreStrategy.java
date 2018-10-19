@@ -1,5 +1,7 @@
 package mycontroller.movestrategies;
 
+//Group 40
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class ExploreStrategy implements Pathable{
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, 
             Coordinate from) {
 	
-		// remove all nodes in the view from notSeen
+		// remove all nodes in the current view from notSeen
 		for(int x = from.x - viewSquare; x<=from.x + viewSquare;x++) {
 			for(int y = from.y - viewSquare ; y<=from.y + viewSquare;y++) {
 				if((x>0 && y>0) && (x < World.MAP_WIDTH && y < World.MAP_HEIGHT)) {
