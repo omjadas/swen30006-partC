@@ -23,7 +23,7 @@ import world.WorldSpatial.Direction;
 public class MyAIController extends CarController{
 	
 	// initialise the parameters
-	HashMap<Coordinate, MapTile> map = super.getMap();// get the raw map
+	private HashMap<Coordinate, MapTile> map = super.getMap();// get the raw map
 	private Coordinate currentPosition;
 	private boolean initiate = true;
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
