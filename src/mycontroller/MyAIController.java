@@ -67,19 +67,17 @@ public class MyAIController extends CarController{
 			}
 			normal = true; // do normal strategy to grab the keys
 		}
-
-		if (!normal) {
-			// get path from explore strategy
-			path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
-		} else {
+		
+		if (normal) {
 			// update the internal parameters in normalStrategy
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			// get path from normal strategy to retrieve keys
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
-			if (path == null) { // switch back to explore strategy
-				// look for more keys
-				path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
-			}
+		}
+
+		if (!normal || path == null) {
+			// get path from explore strategy
+			path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
 		}
 
 		// implement healing strategy
