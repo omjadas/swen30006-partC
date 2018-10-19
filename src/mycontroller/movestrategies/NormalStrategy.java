@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-
 import mycontroller.AStar;
 import mycontroller.util.util;
 import tiles.MapTile;
-import tiles.MapTile.Type;
 import utilities.Coordinate;
 
 public class NormalStrategy implements Pathable {
