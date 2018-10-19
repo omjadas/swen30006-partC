@@ -167,24 +167,22 @@ public class AStar {
 
 	// to check if it is safe to step onto the grass
 	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
-	Direction direction = util.getMyDirection(current,grass); // check the orientation when the car step on the grass
-	Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction); // check the neighbour of the grass
-	Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);// check the neighbour of the neighbour of the grass
-	
-	if(view.containsKey(grass_two_next)) { // if the car can see the the neighbour of the neighbour of the grass
-		if (view.get(grass_one_next).isType(Type.WALL)){ // if the end of the grass is a wall
-			return false; // it is not safe
-		}else if(view.get(grass_one_next).isType(Type.TRAP)) { 
-			if(util.getTrapType(view, grass_one_next).equals("mud")) { // if the end of the grass is a mud
-				return false; // this is not safe either
-			}
-    		if (util.getTrapType(view, grass_one_next).equals("grass")){ // if the end of the grass is a grass
-    			return isSafeGrass( view, grass_one_next, grass_two_next); // look further
-    		}
-    	}
+		Direction direction = util.getMyDirection(current,grass); // check the orientation when the car step on the grass
+		Coordinate grass_one_next = util.getNeighbourCoordinate(grass, direction); // check the neighbour of the grass
+		Coordinate grass_two_next = util.getNeighbourCoordinate(grass_one_next, direction);// check the neighbour of the neighbour of the grass
+		
+		if(view.containsKey(grass_two_next)) { // if the car can see the the neighbour of the neighbour of the grass
+			if (view.get(grass_one_next).isType(Type.WALL)){ // if the end of the grass is a wall
+				return false; // it is not safe
+			}else if(view.get(grass_one_next).isType(Type.TRAP)) { 
+				if(util.getTrapType(view, grass_one_next).equals("mud")) { // if the end of the grass is a mud
+					return false; // this is not safe either
+				}
+	    		if (util.getTrapType(view, grass_one_next).equals("grass")){ // if the end of the grass is a grass
+	    			return isSafeGrass( view, grass_one_next, grass_two_next); // look further
+	    		}
+	    	}
+		}
+		return true; // if nothing dangerous has been found, then it is safe. Or, the car can't see the end of the grass
 	}
-	return true; // if nothing dangerous has been found, then it is safe. Or, the car can't see the end of the grass
-}
-
-
 }
