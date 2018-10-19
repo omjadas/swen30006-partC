@@ -14,19 +14,19 @@ import utilities.Coordinate;
 
 public class NormalStrategy implements Pathable {
 	
-	private float health;
+	// define parameters
 	private ArrayList<Coordinate> foundKeys;
 	private int collectedKeys;
 	private int unreachable = 0;
 	private int totalKeys;
-	private boolean isStop = false;
 	
+	// initial the total keys in this game
 	public NormalStrategy(int totalKeys) {
 		this.totalKeys = totalKeys;
 	}
 
+	// update the strategy with latest info
 	public void update(float health, ArrayList<Coordinate> foundKeys, int collectedKeys) {
-		this.health = health;
 		this.foundKeys = foundKeys;
 		this.collectedKeys = collectedKeys;
 	}
@@ -35,6 +35,8 @@ public class NormalStrategy implements Pathable {
 	public List<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate from) {
 		ArrayList<Coordinate> path = new ArrayList<Coordinate>();
 		Coordinate destination;
+		
+		// determine the destination 
 		if ((collectedKeys + unreachable) < foundKeys.size()) {
 			destination = foundKeys.get(collectedKeys + unreachable);
 		} else if (collectedKeys < totalKeys) {
@@ -43,6 +45,7 @@ public class NormalStrategy implements Pathable {
 			destination = util.getFinal(map);
 		}
 				
+		// get path from Astar service
 		path = (ArrayList<Coordinate>) AStar.getPath(map, from, destination);
 
 		if (path == null) {
