@@ -15,7 +15,6 @@ import world.World;
 public class ExploreStrategy implements Pathable{
 	private ArrayList<Coordinate> notSeen = new ArrayList<>();
 	private Coordinate furthest_old;
-	static HashMap<Coordinate,Integer> visits = new HashMap<Coordinate,Integer>();
 	private int viewSquare = Car.VIEW_SQUARE;
 
 	// initial notSeen including every node in the map
