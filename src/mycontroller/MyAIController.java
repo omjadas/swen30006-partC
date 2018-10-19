@@ -70,7 +70,7 @@ public class MyAIController extends CarController{
 		
 		if (normal) {
 			// update the internal parameters in normalStrategy
-			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
+			normalStrategy.update(keysOrdered, getKeys().size());
 			// get path from normal strategy to retrieve keys
 			path = (ArrayList<Coordinate>) normalStrategy.getPath(map, currentPosition);
 		}

@@ -25,7 +25,7 @@ public class NormalStrategy implements Pathable {
 	}
 
 	// update the strategy with latest info
-	public void update(float health, ArrayList<Coordinate> foundKeys, int collectedKeys) {
+	public void update(ArrayList<Coordinate> foundKeys, int collectedKeys) {
 		this.foundKeys = foundKeys;
 		this.collectedKeys = collectedKeys;
 	}
@@ -39,14 +39,17 @@ public class NormalStrategy implements Pathable {
 		if ((collectedKeys + unreachable) < foundKeys.size()) {
 			destination = foundKeys.get(collectedKeys + unreachable);
 		} else if (collectedKeys < totalKeys) {
+			// need to explore to find more keys
 			return null;
 		} else {
+			// all keys found, go to exit
 			destination = util.getFinal(map);
 		}
 				
-		// get path from Astar service
+		// get path to the destination using AStar
 		path = (ArrayList<Coordinate>) AStar.getPath(map, from, destination);
 
+		// if path is null key must be unreachable
 		if (path == null) {
 			unreachable += 1;
 			return getPath(map, from);
