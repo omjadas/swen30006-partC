@@ -165,12 +165,6 @@ public class AStar {
 			
 	}
 
-	// for future updates. Not used in this project.
-	public void update(float lava, float grass) {
-		COST_LAVA = lava;
-		COST_GRASS = grass;
-	}
-	
 	// to check if it is safe to step onto the grass
 	private static boolean isSafeGrass(HashMap<Coordinate,MapTile> view, Coordinate current, Coordinate grass) {
 	Direction direction = util.getMyDirection(current,grass); // check the orientation when the car step on the grass
