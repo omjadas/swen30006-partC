@@ -15,9 +15,10 @@ public class HealingStrategy implements Pathable {
 	private float health;
 	private ArrayList<Coordinate> current_path;
 	
+	// update healing strategy parameters
 	public void update(float health, ArrayList<Coordinate> current) {
 		this.health = health;
-		this.current_path = current;
+		this.current_path = current; // we want to keep the current path option so we can compare
 	}
 	
 	@Override
@@ -25,13 +26,19 @@ public class HealingStrategy implements Pathable {
 		
 		ArrayList<Coordinate> path = new ArrayList<>();
 		ArrayList<ArrayList<Coordinate>> healthPaths = new ArrayList<>();
+		
+		// find all paths to the known healths location
 		for (Coordinate location : util.getHealthLocations(map)) {
 			healthPaths.add(AStar.getPath(map, from, location));
 		}
 		if (healthPaths.size() > 0) {
+			// find the shortest distance to the health
 			path = Collections.min(healthPaths, (ArrayList<Coordinate> p1, ArrayList<Coordinate> p2) -> {
 				return healthNeeded(map, p1) - healthNeeded(map, p2);
 			});
+			// only go to health if
+			// 1, the car would have more healths if it went back to get health and came back to the same location
+			// 2, the car had enough health to go back
 			if ((100 - healthNeeded(map, path)) > (int) health && (int) health > healthNeeded(map, path)) {
 				Collections.reverse(path);
 				return path;
@@ -40,6 +47,7 @@ public class HealingStrategy implements Pathable {
 		return current_path;
 	}
 	
+	// calculate the health required to follow the given path
 	private int healthNeeded(HashMap<Coordinate, MapTile> map, ArrayList<Coordinate> path) {
 		int healthNeeded = 0;
 		for (Coordinate tile : path) {
@@ -48,30 +56,5 @@ public class HealingStrategy implements Pathable {
 			}
 		}
 		return healthNeeded;
-	}
-	
-	private List<Coordinate> getHealth(HashMap<Coordinate, MapTile> map, Coordinate from) {
-		ArrayList<Coordinate> locations = util.getHealthLocations(map);
-		ArrayList<Coordinate> path = null;
-		
-		if (locations.size() == 0) {
-			return current_path;
-		}
-		
-		for (Coordinate location : locations) {
-			path = (ArrayList<Coordinate>) AStar.getPath(map, from, location);
-			Collections.reverse(path);
-			int healthNeeded = 0;
-			for (Coordinate tile : path) {
-				if (util.getTrapType(map, tile).equals("lava")) {
-					healthNeeded += 5;
-				}
-			}
-			if ((healthNeeded) >= health) {
-				continue;
-			}
-			break;
-		}
-		return path;
 	}
 }
