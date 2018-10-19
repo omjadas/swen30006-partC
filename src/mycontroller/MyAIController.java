@@ -23,7 +23,7 @@ import world.WorldSpatial.Direction;
 public class MyAIController extends CarController{
 	
 	// initialise the parameters
-	private HashMap<Coordinate, MapTile> map = super.getMap();// get the raw map
+	HashMap<Coordinate, MapTile> map = super.getMap();// get the raw map
 	private Coordinate currentPosition;
 	private boolean initiate = true;
 	private ArrayList<Coordinate> keysOrdered = new ArrayList<Coordinate>();
@@ -190,7 +190,7 @@ public class MyAIController extends CarController{
 	}
 	
 	// apply the moving action to the car
-	public void go(Direction input, Direction orientation) {
+	private void go(Direction input, Direction orientation) {
 		if (input.equals(WorldSpatial.Direction.NORTH)) {
 			switch(orientation){
 			case EAST:
