@@ -41,29 +41,35 @@ public class MyAIController extends CarController{
 
 	@Override
 	public void update() {
-		boolean exploring = false; // if the current strategy is exploring
-		boolean normal = false; // if the current strategy is normal
+		
 		ArrayList<Coordinate> path = new ArrayList<>(); // the path to be executed
 		currentPosition  = new Coordinate(getPosition());
-		updateWorldMap(getView()); // update the map to have the latest view
 		
+		updateWorldMap(getView()); // update the map to have the latest view
+		path = strategySelector(); // select the best strategy
+		execute(path); // execute the path from the strategy
+	}
+
+	private ArrayList<Coordinate> strategySelector() {
 		// determine whether to explore
-		if (util.getKeyLocations(map).size() == 0 && numKeys() != 0) { // check if keys have been located
-			exploring = true;
+		boolean normal = false; // if the current strategy is normal
+		ArrayList<Coordinate> path = new ArrayList<>();
+		
+		if (util.getKeyLocations(map).size() == 0 && numKeys() != 0) { // if no keys have been found
+			normal = false; // do exploring
 		} else {
 			for (Coordinate key : util.getKeyLocations(map)) { // if found some keys already
 				if (!keysOrdered.contains(key)) {
 					keysOrdered.add(key); // add all the keys locations
 				}
 			}
-			normal = true;
+			normal = true; // do normal strategy to grab the keys
 		}
-					
-		
-		if (exploring) {
+
+		if (!normal) {
 			// get path from explore strategy
 			path = (ArrayList<Coordinate>) exploreStrategy.getPath(map, currentPosition);
-		} else if (normal) {
+		} else {
 			// update the internal parameters in normalStrategy
 			normalStrategy.update(getHealth(), keysOrdered, getKeys().size());
 			// get path from normal strategy to retrieve keys
@@ -80,41 +86,43 @@ public class MyAIController extends CarController{
 			path = (ArrayList<Coordinate>) healingStrategy.getPath(map, currentPosition);
 		}
 		
-		// wait for full health standing on a health
 		for (Coordinate location : util.getHealthLocations(map)) {
 			if (currentPosition.equals(location) && getHealth() < 100.0) {
 				path.clear();
 				path.add(currentPosition);
-				path.add(currentPosition);
-				break;
+				path.add(currentPosition); // applying a brake
+				return path;
 			}
 		}
 		
+		return path;
+	}
+
+	private void execute(ArrayList<Coordinate> path) {
 		// we only need the nextStep from the path for the car to move to
 		Coordinate nextStep = null;
 		if (path != null && path.size()>1) {
 			currentPosition = new Coordinate(getPosition());	
 			nextStep = path.get(1);// 0 is current location, 1 is the next step
 			startMyCar();// start car engine after a brake
+			
+			// to count the number of stops the car has, debug purpose
 			if (getSpeed()<1 && !nextStep.equals(currentPosition)) {
 				badEngineCount++;
 			}
-			if (badEngineCount>40) { // if the car brakes 50 times in this game
-				System.exit(0); // quit the game
-			}
+
 			move(currentPosition, nextStep); // move the car from current location to the next location
-			System.out.println(currentPosition+","+nextStep+","+getHealth());
 			updateWorldMap(getView()); // update the map again after the move
 		}
 	}
-	
+
 	// update the map with view
 	private void updateWorldMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
 	private void startMyCar() {
-		// to determine if the car is stuck when it first starts
+		// to determine if the car is stuck 
 		if(initiate) { 
 			MapTile front_mapTile = map.get(util.getNeighbourCoordinate(currentPosition,getOrientation()));
 			MapTile back_mapTile = map.get(util.getNeighbourCoordinate(currentPosition,util.reverseOrientation(getOrientation())));
@@ -125,16 +133,17 @@ public class MyAIController extends CarController{
 			if (front_mapTile.isType(Type.TRAP)) {
 				front_trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,getOrientation()));
 			}
+			// before speed up, check maptile behind
 			if (back_mapTile.isType(Type.TRAP)) {
 				back_trapType = util.getTrapType(map,util.getNeighbourCoordinate(currentPosition,util.reverseOrientation(getOrientation())));
 			}
-			// if the front of the car is not wall or mud
+			// checking surroundings
 			if (front_mapTile.isType(Type.WALL) || front_trapType.equals("mud")) {
 				applyReverseAcceleration();// apply backward speed
 			}else if(back_mapTile.isType(Type.WALL) || back_trapType.equals("mud")){
 				applyForwardAcceleration();// apply forward speed 
 			}else {
-				if(Math.random() < 0.5) {
+				if(Math.random() < 0.5) { // give a chance to break tie if safe
 					applyForwardAcceleration();// apply forward speed 
 				}else {
 					applyReverseAcceleration();// apply backward speed
@@ -159,7 +168,7 @@ public class MyAIController extends CarController{
 	private void move(Coordinate current, Coordinate next) {
 		// if the car wants to stop
 		if (current.equals(next)) {
-			applyBrake(); // apply brakes
+			applyBrake(); // apply brakes, need to initial engine again later
 		} else {
 			// check the orientation the car wants to go based on current and next location
 			Direction nextOrientation = getNextOrientation(current,next); 
