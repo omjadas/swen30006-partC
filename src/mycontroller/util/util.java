@@ -13,16 +13,17 @@ import world.WorldSpatial.Direction;
 
 public class util {
 	
-//	private static HashMap<Coordinate, MapTile> map;
-	
+	// distance using euclidean method
 	public static float getDistanceEucl(Coordinate from, Coordinate to) {
 		return (float) Math.pow(Math.abs(Math.pow(from.x - to.x, 2)) + Math.pow(from.y - to.y, 2), 0.5);		
 	}
 	
+	// distance using manhattan method
 	public static float getDistanceManh(Coordinate from, Coordinate to) {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
 	
+	// obtain the reversal direction of the given direction
 	public static Direction reverseOrientation(Direction orientation) {
 		if (orientation.equals(Direction.EAST))
 			return Direction.WEST;
@@ -34,22 +35,22 @@ public class util {
 			return Direction.NORTH;
 	}
 	
+	// universal tile type retriever
 	public static String getTrapType(HashMap<Coordinate, MapTile> map, Coordinate coordinate) {
 		MapTile mapTile = map.get(coordinate);
-//		System.out.println(mapTile.getType().toString());
 		if (mapTile != null) {
 			if (!mapTile.isType(Type.TRAP)) {
-				return mapTile.getType().toString();
+				return mapTile.getType().toString(); // return String WALL/ROAD
 	        }else {
 	        	TrapTile trapTile = (TrapTile) mapTile;
-	        	return trapTile.getTrap();
+	        	return trapTile.getTrap(); // return String mud/grass/lava/health
 	        }
 		}else {
-			return "WALL"; // need work here
+			return "WALL"; // anything outside of the map are treated as walls so never go there
 		}
-//		return null;
 	}
 	
+	// check surrounding to find out the surrounding map tile types given a radius
 	public static HashMap<Coordinate, String> getNearby(HashMap<Coordinate, MapTile> map, Coordinate position, int radius){
 		if (radius == 1) {
 			return getAllNeighbours(map, position);
@@ -62,6 +63,7 @@ public class util {
 		return nearby;
 	}
 	
+	// a special case of getNearby when radius is 1, so neighbours
 	public static HashMap<Coordinate, String> getAllNeighbours(HashMap<Coordinate, MapTile> map, Coordinate position){
 
 		final ArrayList<Coordinate> allNeighbours = new ArrayList<Coordinate>();
@@ -79,8 +81,8 @@ public class util {
 		return myNeighbours;
 	}
 	
+	// get the coordinates of neighbous (radius = 1)
 	public static Coordinate getNeighbourCoordinate(Coordinate from, Direction direction) {
-//		System.out.println("in "+from+direction);
 		Coordinate to = null;
 		switch(direction){
 		case EAST:
@@ -96,11 +98,10 @@ public class util {
 			to = new Coordinate(from.x-1,from.y);
 			break;
 		}
-//		System.out.println("out "+to);
-		// TODO Auto-generated method stub
 		return to;
 	}
 	
+	// get a direction from current position to the next position
 	public static Direction getMyDirection(Coordinate from, Coordinate to) {
 		if (to.x>from.x && to.y==from.y) {
 			return Direction.EAST;
@@ -114,6 +115,7 @@ public class util {
 		return null;
 	}
 	
+	// get the coordinate for FINAL
 	public static Coordinate getFinal(HashMap<Coordinate, MapTile> map) {
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
 			if (entry.getValue().getType().equals(Type.FINISH)) {
@@ -123,6 +125,7 @@ public class util {
 		return null;
 	}
 	
+	// get the coordinate for START
 	public static Coordinate getStart(HashMap<Coordinate, MapTile> map) {
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
 			if (entry.getValue().getType().equals(Type.START)) {
@@ -132,6 +135,7 @@ public class util {
 		return null;
 	}
 	
+	// get a list of coordinates for keys been discovered
 	public static ArrayList<Coordinate> getKeyLocations(HashMap<Coordinate, MapTile> map) {
 		ArrayList<Coordinate> keys = new ArrayList<Coordinate>();
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
@@ -148,6 +152,7 @@ public class util {
 		return keys;
 	}
 	
+	// get a list of coordinates for healths been discovered
 	public static ArrayList<Coordinate> getHealthLocations(HashMap<Coordinate, MapTile> map) {
 		ArrayList<Coordinate> healths = new ArrayList<Coordinate>();
 		for (Entry<Coordinate, MapTile> entry:map.entrySet()) {
